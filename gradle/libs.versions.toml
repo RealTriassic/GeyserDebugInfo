@@ -1,0 +1,11 @@
+metadata.format.version = "1.1"
+
+[versions]
+geyser-api = "2.4.2-SNAPSHOT"
+shadow = "8.1.1"
+
+[plugins]
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
+
+[libraries]
+geyser-api = { group = "org.geysermc.geyser", name = "core", version.ref = "geyser-api" }

@@ -1,0 +1,6 @@
+id: geyserdebuginfo
+name: GeyserDebugInfo
+main: org.stupidcraft.geyserdebuginfo.GeyserDebugInfo
+api: 2.4.1
+version: ${version}
+authors: [StupidCraft, Triassic]
