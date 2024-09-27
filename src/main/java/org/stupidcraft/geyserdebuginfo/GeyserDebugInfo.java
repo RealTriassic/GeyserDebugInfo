@@ -2,7 +2,7 @@ package org.stupidcraft.geyserdebuginfo;
 
 import org.geysermc.event.subscribe.Subscribe;
 import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
-import org.geysermc.geyser.api.event.lifecycle.GeyserPostInitializeEvent;
+import org.geysermc.geyser.api.event.lifecycle.GeyserPreInitializeEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserShutdownEvent;
 import org.geysermc.geyser.api.extension.Extension;
 import org.stupidcraft.geyserdebuginfo.command.commands.F3Command;
@@ -29,7 +29,7 @@ public class GeyserDebugInfo implements Extension {
      * and registers event listeners.
      */
     @Subscribe
-    public void onPostInitialize(GeyserPostInitializeEvent event) {
+    public void onPostInitialize(GeyserPreInitializeEvent event) {
         long startTime = System.currentTimeMillis();
 
         this.dataFolder = this.dataFolder().toFile();
