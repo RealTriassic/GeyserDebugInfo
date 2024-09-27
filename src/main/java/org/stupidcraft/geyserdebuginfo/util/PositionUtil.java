@@ -1,13 +1,12 @@
 package org.stupidcraft.geyserdebuginfo.util;
 
 import org.cloudburstmc.math.vector.Vector3f;
+import org.geysermc.geyser.entity.EntityDefinitions;
 
 /**
  * Utility class for handling position-related calculations, such as chunk coordinates and facing direction.
  */
 public class PositionUtil {
-
-    private static final float PLAYER_OFFSET = 1.62f; // TODO: Remove when https://github.com/GeyserMC/Geyser/issues/5061 solved.
 
     /**
      * Adjusts the y-coordinate of the given Vector3f by removing the player offset.
@@ -17,7 +16,7 @@ public class PositionUtil {
      * @return a new Vector3f with the y-coordinate adjusted by subtracting the PLAYER_OFFSET
      */
     public static Vector3f adjustForPlayerOffset(Vector3f position) {
-        return Vector3f.from(position.getX(), position.getY() - PLAYER_OFFSET, position.getZ());
+        return Vector3f.from(position.getX(), position.getY() - EntityDefinitions.PLAYER.offset(), position.getZ()); // TODO: https://github.com/GeyserMC/Geyser/issues/5061.
     }
 
     /**

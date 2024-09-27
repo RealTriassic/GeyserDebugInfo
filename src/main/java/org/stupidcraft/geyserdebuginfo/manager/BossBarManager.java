@@ -20,51 +20,70 @@ import java.util.concurrent.TimeUnit;
  */
 public class BossBarManager {
 
-    private static final long UPDATE_DELAY_MS = 20;
-
-    private final ScheduledExecutorService executor;
-    private final Map<SessionPlayerEntity, BossBar> bossBars;
     private final PlayerDataManager playerDataManager;
+    private final HashMap<SessionPlayerEntity, BossBar> bossBars;
+    private final ScheduledExecutorService executor;
 
-    /**
-     * Constructs a new BossBarManager.
-     */
     public BossBarManager(
             final PlayerDataManager playerDataManager
     ) {
-        this.executor = Executors.newSingleThreadScheduledExecutor();
-        this.bossBars = new HashMap<>();
         this.playerDataManager = playerDataManager;
+        this.bossBars = new HashMap<>();
+        this.executor = Executors.newSingleThreadScheduledExecutor();
+
+        executor.scheduleAtFixedRate(this::updateAllBossBars, 0, 50, TimeUnit.MILLISECONDS);
     }
 
     /**
      * Creates a boss bar for the specified player if it doesn't already exist.
      *
      * @param player The player for whom to create the boss bar.
+     * @throws IllegalArgumentException if the player is null.
      */
-    public void createBossBar(final @NotNull GeyserSession session, final @NotNull SessionPlayerEntity player) {
-        if (bossBars.containsKey(player)) return;
+    public void createBossBar(final @NotNull SessionPlayerEntity player) {
+        if (bossBars.containsKey(player))
+            return;
 
         final long entityId = player.getSession().getEntityCache().getNextEntityId().incrementAndGet();
         BossBar bossBar = new BossBar(player.getSession(), entityId, Component.text("Geyser Debug Information"), 1.0f, 1, 1, 1);
         player.getSession().getEntityCache().addBossBar(player.getUuid(), bossBar);
         playerDataManager.setF3Enabled(player.getUuid(), true);
         bossBars.put(player, bossBar);
+    }
 
-        // Schedule task to update the boss bar every UPDATE_DELAY_MS milliseconds
-        executor.scheduleAtFixedRate(() -> updateBossBar(session, player), 0, UPDATE_DELAY_MS, TimeUnit.MILLISECONDS);
+    /**
+     * Removes the boss bar for the specified player and updates the player data
+     * to indicate that the F3 feature is disabled by default.
+     *
+     * @param player The player whose boss bar is to be removed.
+     * @throws IllegalArgumentException if the player is null.
+     */
+    public void removeBossBar(final @NotNull SessionPlayerEntity player) {
+        removeBossBar(player, true);
     }
 
     /**
      * Removes the boss bar for the specified player.
      *
-     * @param player The player whose boss bar is to be removed.
+     * @param player           The player whose boss bar is to be removed.
+     * @param updatePlayerData Whether to update the player data to indicate that the F3 feature is disabled.
+     * @throws IllegalArgumentException if the player is null.
      */
-    public void removeBossBar(final @NotNull SessionPlayerEntity player) {
+    public void removeBossBar(final @NotNull SessionPlayerEntity player, boolean updatePlayerData) {
         BossBar bossBar = bossBars.remove(player);
-        playerDataManager.setF3Enabled(player.getUuid(), false);
-        if (bossBar != null) {
+        if (bossBar != null)
             bossBar.removeBossBar();
+
+        if (updatePlayerData)
+            playerDataManager.setF3Enabled(player.getUuid(), false);
+    }
+
+    /**
+     * Requests a bossbar update to all tracked bossbars.
+     */
+    private void updateAllBossBars() {
+        for (Map.Entry<SessionPlayerEntity, BossBar> entry : bossBars.entrySet()) {
+            updateBossBar(entry.getKey().getSession(), entry.getKey());
         }
     }
 
@@ -96,7 +115,7 @@ public class BossBarManager {
                 .append(Component.text(pos.getFloorY() / 16 + " "))
                 .append(Component.text(session.getLastChunkPosition().getY()))
                 .append(Component.newline())
-                .append(Component.text(PositionUtil.getFacingDirection(player.getYaw()) + " (" +  String.format("%.1f", player.getYaw()) + " / " + String.format("%.1f", player.getPitch()) + ")"))
+                .append(Component.text(PositionUtil.getFacingDirection(player.getYaw()) + " (" + String.format("%.1f", player.getYaw()) + " / " + String.format("%.1f", player.getPitch()) + ")"))
                 .append(Component.newline())
                 .append(Component.text(session.getDimensionType().bedrockId()));
 
@@ -105,7 +124,7 @@ public class BossBarManager {
     }
 
     /**
-     * Shuts down the scheduled executor service, stopping all updates.
+     * Shuts down the executor service, stopping all updates.
      */
     public void shutdown() {
         executor.shutdown();

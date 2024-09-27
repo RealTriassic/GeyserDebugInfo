@@ -49,7 +49,7 @@ public class GeyserDebugInfo implements Extension {
                     GeyserSession session = (GeyserSession) source.connection();
                     SessionPlayerEntity player = session.getPlayerEntity();
                     if (player != null && !playerDataManager.isF3Enabled(player.getUuid())) {
-                        bossBarManager.createBossBar(session, player);
+                        bossBarManager.createBossBar(player);
                     } else {
                         bossBarManager.removeBossBar(player);
                         playerDataManager.setF3Enabled(player.getUuid(), false);
@@ -60,10 +60,20 @@ public class GeyserDebugInfo implements Extension {
         event.register(command);
     }
 
+    /**
+     * Retrieves the {@link BossBarManager} instance associated with this class.
+     *
+     * @return the {@link BossBarManager} used for managing boss bars.
+     */
     public BossBarManager bossBarManager() {
         return this.bossBarManager;
     }
 
+    /**
+     * Retrieves the {@link PlayerDataManager} instance associated with this class.
+     *
+     * @return the {@link PlayerDataManager} used for managing player data.
+     */
     public PlayerDataManager playerDataManager() {
         return this.playerDataManager;
     }

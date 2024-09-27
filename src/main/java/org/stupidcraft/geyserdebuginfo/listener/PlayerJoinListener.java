@@ -9,6 +9,9 @@ import org.stupidcraft.geyserdebuginfo.GeyserDebugInfo;
 import org.stupidcraft.geyserdebuginfo.manager.BossBarManager;
 import org.stupidcraft.geyserdebuginfo.manager.PlayerDataManager;
 
+/**
+ * This class is responsible for listening for player connection events.
+ */
 public class PlayerJoinListener {
 
     private final BossBarManager bossBarManager;
@@ -21,21 +24,24 @@ public class PlayerJoinListener {
         this.playerDataManager = instance.playerDataManager();
     }
 
+    /**
+     * Called when a player joins.
+     */
     @Subscribe
-    public void onJoin(SessionJoinEvent event) {
-        GeyserSession session = (GeyserSession) event.connection();
-        SessionPlayerEntity player = session.getPlayerEntity();
+    public void onJoin(final SessionJoinEvent event) {
+        final GeyserSession session = (GeyserSession) event.connection();
+        final SessionPlayerEntity player = session.getPlayerEntity();
 
-        if (playerDataManager.isF3Enabled(player.getUuid())) {
-            bossBarManager.createBossBar(session, player);
-        }
+        if (playerDataManager.isF3Enabled(player.getUuid()))
+            bossBarManager.createBossBar(player);
     }
 
+    /**
+     * Called when a player disconnects.
+     */
     @Subscribe
-    public void onDisconnect(SessionDisconnectEvent event) {
-        GeyserSession session = (GeyserSession) event.connection();
-        SessionPlayerEntity player = session.getPlayerEntity();
-
-        bossBarManager.removeBossBar(player);
+    public void onDisconnect(final SessionDisconnectEvent event) {
+        final GeyserSession session = (GeyserSession) event.connection();
+        bossBarManager.removeBossBar(session.getPlayerEntity(), false);
     }
 }
