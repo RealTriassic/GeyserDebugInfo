@@ -1,14 +1,12 @@
 package org.stupidcraft.geyserdebuginfo;
 
 import org.geysermc.event.subscribe.Subscribe;
-import org.geysermc.geyser.api.command.Command;
-import org.geysermc.geyser.api.command.CommandSource;
 import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPostInitializeEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserShutdownEvent;
 import org.geysermc.geyser.api.extension.Extension;
-import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
-import org.geysermc.geyser.session.GeyserSession;
+import org.stupidcraft.geyserdebuginfo.command.commands.F3Command;
+import org.stupidcraft.geyserdebuginfo.command.commands.ReloadCommand;
 import org.stupidcraft.geyserdebuginfo.config.Configuration;
 import org.stupidcraft.geyserdebuginfo.config.ConfigurationContainer;
 import org.stupidcraft.geyserdebuginfo.listener.PlayerJoinListener;
@@ -16,6 +14,7 @@ import org.stupidcraft.geyserdebuginfo.manager.BossBarManager;
 import org.stupidcraft.geyserdebuginfo.manager.PlayerDataManager;
 
 import java.io.File;
+import java.util.stream.Stream;
 
 public class GeyserDebugInfo implements Extension {
 
@@ -24,6 +23,11 @@ public class GeyserDebugInfo implements Extension {
     private PlayerDataManager playerDataManager;
     private ConfigurationContainer<Configuration> config;
 
+    /**
+     * Initializes the extension.
+     * Sets up the data folder, loads configuration,
+     * and registers event listeners.
+     */
     @Subscribe
     public void onPostInitialize(GeyserPostInitializeEvent event) {
         this.dataFolder = this.dataFolder().toFile();
@@ -32,7 +36,7 @@ public class GeyserDebugInfo implements Extension {
 
         loadConfig();
         this.playerDataManager = new PlayerDataManager(dataFolder, this.logger(), false);
-        this.bossBarManager = new BossBarManager(playerDataManager);
+        this.bossBarManager = new BossBarManager(this);
         this.eventBus().register(new PlayerJoinListener(this));
     }
 
@@ -48,35 +52,39 @@ public class GeyserDebugInfo implements Extension {
         }
     }
 
+    /**
+     * Defines and registers commands for the extension.
+     */
+    @Subscribe
+    public void onDefineCommands(GeyserDefineCommandsEvent event) {
+        Stream.of(
+                new F3Command(this),
+                new ReloadCommand(this)
+        ).forEach(command -> event.register(command.createCommand()));
+    }
+
+    /**
+     * Called during the shutdown process.
+     * Cleans up resources and saves player data.
+     */
     @Subscribe
     public void onShutdown(GeyserShutdownEvent event) {
         bossBarManager.shutdown();
         playerDataManager.savePlayerData();
     }
 
-    @Subscribe
-    public void onDefineCommands(GeyserDefineCommandsEvent event) {
-        final Command command = Command.builder(this)
-                .name("f3")
-                .playerOnly(true)
-                .bedrockOnly(true)
-                .source(CommandSource.class)
-                .description("F3 Testing Command")
-                .executor((source, cmd, args) -> {
-                    GeyserSession session = (GeyserSession) source.connection();
-                    SessionPlayerEntity player = session.getPlayerEntity();
-                    if (player != null && !playerDataManager.isF3Enabled(player.getUuid())) {
-                        bossBarManager.createBossBar(player);
-                    } else {
-                        bossBarManager.removeBossBar(player);
-                        playerDataManager.setF3Enabled(player.getUuid(), false);
-                    }
-                })
-                .build();
-
-        event.register(command);
+    /**
+     * Reloads the configuration settings.
+     */
+    public synchronized void reload() {
+        config.reload();
     }
 
+    /**
+     * Gets the current configuration container.
+     *
+     * @return the configuration container
+     */
     public ConfigurationContainer<Configuration> config() {
         return this.config;
     }
