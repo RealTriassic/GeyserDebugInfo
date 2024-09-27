@@ -24,12 +24,13 @@ public class ReloadCommand implements BaseCommand {
                 .bedrockOnly(false)
                 .source(CommandSource.class)
                 .description("Reloads the configuration file.")
+                .permission("f3.command.reload")
                 .executor(this::execute)
                 .build();
     }
 
     private void execute(@NonNull CommandSource commandSource, @NonNull Command command, @NonNull String[] strings) {
         instance.reload();
-        commandSource.sendMessage("Configuration reloaded successfully.");
+        commandSource.sendMessage("§aGeyserDebugInfo configuration has been reloaded.");
     }
 }

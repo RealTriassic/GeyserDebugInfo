@@ -32,6 +32,7 @@ public class F3Command implements BaseCommand {
                 .bedrockOnly(true)
                 .source(CommandSource.class)
                 .description("Toggle the display of the F3 debug menu.")
+                .permission("f3.command.toggle")
                 .executor(this::execute)
                 .build();
     }
