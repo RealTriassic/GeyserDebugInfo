@@ -9,6 +9,8 @@ import org.geysermc.geyser.api.event.lifecycle.GeyserShutdownEvent;
 import org.geysermc.geyser.api.extension.Extension;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
+import org.stupidcraft.geyserdebuginfo.config.Configuration;
+import org.stupidcraft.geyserdebuginfo.config.ConfigurationContainer;
 import org.stupidcraft.geyserdebuginfo.listener.PlayerJoinListener;
 import org.stupidcraft.geyserdebuginfo.manager.BossBarManager;
 import org.stupidcraft.geyserdebuginfo.manager.PlayerDataManager;
@@ -17,18 +19,33 @@ import java.io.File;
 
 public class GeyserDebugInfo implements Extension {
 
+    private File dataFolder;
     private BossBarManager bossBarManager;
     private PlayerDataManager playerDataManager;
+    private ConfigurationContainer<Configuration> config;
 
     @Subscribe
     public void onPostInitialize(GeyserPostInitializeEvent event) {
-        File dataFolder = this.dataFolder().toFile();
+        this.dataFolder = this.dataFolder().toFile();
         if (!dataFolder.exists() && !dataFolder.mkdirs())
             logger().error("Failed to create data folder " + dataFolder.getAbsolutePath());
 
+        loadConfig();
         this.playerDataManager = new PlayerDataManager(dataFolder, this.logger(), false);
         this.bossBarManager = new BossBarManager(playerDataManager);
         this.eventBus().register(new PlayerJoinListener(this));
+    }
+
+    /**
+     * Loads the configuration file from the specified data folder.
+     * This method attempts to load the configuration file and logs an error if the process fails.
+     */
+    private void loadConfig() {
+        try {
+            this.config = ConfigurationContainer.load(dataFolder.toPath(), Configuration.class);
+        } catch (Throwable e) {
+            logger().error("Could not load config.yml file", e);
+        }
     }
 
     @Subscribe
@@ -58,6 +75,10 @@ public class GeyserDebugInfo implements Extension {
                 .build();
 
         event.register(command);
+    }
+
+    public ConfigurationContainer<Configuration> config() {
+        return this.config;
     }
 
     /**

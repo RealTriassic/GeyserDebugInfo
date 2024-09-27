@@ -1,11 +1,13 @@
 metadata.format.version = "1.1"
 
 [versions]
-geyser-api = "2.4.2-SNAPSHOT"
-shadow = "8.1.1"
+configurate = "4.1.2"
+geyser = "2.4.2-SNAPSHOT"
+shadow = "8.3.2"
 
 [plugins]
-shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 
 [libraries]
-geyser-api = { group = "org.geysermc.geyser", name = "core", version.ref = "geyser-api" }
+configurate-hocon = { group = "org.spongepowered", name = "configurate-hocon", version.ref = "configurate" }
+geyser-core = { group = "org.geysermc.geyser", name = "core", version.ref = "geyser" }

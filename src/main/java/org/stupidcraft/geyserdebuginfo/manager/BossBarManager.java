@@ -79,7 +79,7 @@ public class BossBarManager {
     }
 
     /**
-     * Requests a bossbar update to all tracked bossbars.
+     * Requests a bossbar update for all tracked bossbars.
      */
     private void updateAllBossBars() {
         for (Map.Entry<SessionPlayerEntity, BossBar> entry : bossBars.entrySet()) {
