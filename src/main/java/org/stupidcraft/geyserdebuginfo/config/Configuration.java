@@ -26,8 +26,8 @@ public class Configuration {
                 "Geyser Debug Information",
                 "",
                 "XYZ: %x% / %y% / %z%",
-                "Block: %floor_x% %floor_y% %floor_z% [%relative_chunk_coordinates%]",
-                "Chunk: %last_chunk_x% %chunk_y% %last_chunk_z%",
+                "Block: %floor_x% %floor_y% %floor_z% [%relative_chunk_x% %relative_chunk_y% %relative_chunk_z%]",
+                "Chunk: %chunk_x% %chunk_y% %chunk_z%",
                 "Facing: %facing% (%yaw% / %pitch%)"
         );
 

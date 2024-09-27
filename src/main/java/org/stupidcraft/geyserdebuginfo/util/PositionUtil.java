@@ -4,7 +4,7 @@ import org.cloudburstmc.math.vector.Vector3f;
 import org.geysermc.geyser.entity.EntityDefinitions;
 
 /**
- * Utility class for handling position-related calculations, such as chunk coordinates and facing direction.
+ * Utility class for handling position-related calculations, such as facing direction.
  */
 public class PositionUtil {
 
@@ -17,31 +17,6 @@ public class PositionUtil {
      */
     public static Vector3f adjustForPlayerOffset(Vector3f position) {
         return Vector3f.from(position.getX(), position.getY() - EntityDefinitions.PLAYER.offset(), position.getZ()); // TODO: https://github.com/GeyserMC/Geyser/issues/5061.
-    }
-
-    /**
-     * Calculates the relative chunk coordinates (within a chunk) for a given absolute Vector3f coordinate.
-     * Each component of the Vector3f is normalized to a range of [0, 15].
-     *
-     * @param absolutePosition The absolute coordinates as a Vector3f.
-     * @return An array of integers containing the relative chunk coordinates [relativeX, relativeY, relativeZ].
-     */
-    public static int[] getRelativeChunkCoordinates(Vector3f absolutePosition) {
-        int relativeX = normalizeToChunkCoordinate(absolutePosition.getFloorX());
-        int relativeY = normalizeToChunkCoordinate(absolutePosition.getFloorY());
-        int relativeZ = normalizeToChunkCoordinate(absolutePosition.getFloorZ());
-
-        return new int[]{relativeX, relativeY, relativeZ};
-    }
-
-    /**
-     * Normalizes the absolute coordinate to a range of [0, 15].
-     *
-     * @param absoluteCoordinate The absolute coordinate.
-     * @return The normalized coordinate (0-15).
-     */
-    private static int normalizeToChunkCoordinate(int absoluteCoordinate) {
-        return (absoluteCoordinate % 16 + 16) % 16;
     }
 
     /**
