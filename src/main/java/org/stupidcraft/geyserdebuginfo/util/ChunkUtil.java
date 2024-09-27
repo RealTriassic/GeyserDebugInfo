@@ -12,6 +12,16 @@ public class ChunkUtil {
     private static final int CHUNK_MASK = REGION_SIZE - 1;
 
     /**
+     * Calculates the chunk Y coordinate based on the absolute Y position.
+     *
+     * @param absoluteY The absolute Y coordinate.
+     * @return The chunk Y coordinate.
+     */
+    public static int calculateChunkY(int absoluteY) {
+        return (absoluteY < 0) ? (absoluteY - 15) / 16 : absoluteY / 16;
+    }
+
+    /**
      * Calculates the global chunk coordinates from player position.
      *
      * @param playerX The player's X coordinate.
@@ -72,20 +82,20 @@ public class ChunkUtil {
      * @return An array of integers containing the relative chunk coordinates [relativeX, relativeY, relativeZ].
      */
     public static int[] getRelativeCoordinates(Vector3f absolutePosition) {
-        int relativeX = normalizeToChunkCoordinate(absolutePosition.getFloorX());
-        int relativeY = normalizeToChunkCoordinate(absolutePosition.getFloorY());
-        int relativeZ = normalizeToChunkCoordinate(absolutePosition.getFloorZ());
-
-        return new int[]{relativeX, relativeY, relativeZ};
+        return normalizeToChunkCoordinate(absolutePosition);
     }
 
     /**
-     * Normalizes the absolute coordinate to a range of [0, 15].
+     * Normalizes the absolute coordinates of a Vector3f to a range of [0, 15].
      *
-     * @param absoluteCoordinate The absolute coordinate.
-     * @return The normalized coordinate (0-15).
+     * @param absolutePosition The absolute coordinates as a Vector3f.
+     * @return An array of integers containing the normalized coordinates [normalizedX, normalizedY, normalizedZ].
      */
-    public static int normalizeToChunkCoordinate(int absoluteCoordinate) {
-        return (absoluteCoordinate % 16 + 16) % 16;
+    public static int[] normalizeToChunkCoordinate(Vector3f absolutePosition) {
+        return new int[]{
+                Math.floorMod(absolutePosition.getFloorX(), CHUNK_SIZE),
+                Math.floorMod(absolutePosition.getFloorY(), CHUNK_SIZE),
+                Math.floorMod(absolutePosition.getFloorZ(), CHUNK_SIZE)
+        };
     }
 }

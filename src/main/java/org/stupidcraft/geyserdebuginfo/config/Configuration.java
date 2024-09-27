@@ -25,9 +25,11 @@ public class Configuration {
         private List<String> displayFormat = Arrays.asList(
                 "Geyser Debug Information",
                 "",
+                "%dimension%",
+                "",
                 "XYZ: %x% / %y% / %z%",
                 "Block: %floor_x% %floor_y% %floor_z% [%relative_chunk_x% %relative_chunk_y% %relative_chunk_z%]",
-                "Chunk: %chunk_x% %chunk_y% %chunk_z%",
+                "Chunk: %chunk_x% %chunk_y% %chunk_z% [%global_chunk_x% %global_chunk_z% in %region_file%]",
                 "Facing: %facing% (%yaw% / %pitch%)"
         );
 

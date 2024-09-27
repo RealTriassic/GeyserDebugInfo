@@ -32,13 +32,13 @@ public class PositionUtil {
 
         // Determine direction based on yaw
         if (yaw >= 45 && yaw < 135) {
-            return "west (towards -X)";
+            return "west (Towards negative X)";
         } else if (yaw >= 135 && yaw < 225) {
-            return "north (towards -Z)";
+            return "north (Towards negative Z)";
         } else if (yaw >= 225 && yaw < 315) {
-            return "east (towards +X)";
+            return "east (Towards positive X)";
         } else {
-            return "south (towards +Z)";
+            return "south (Towards positive Z)";
         }
     }
 }

@@ -107,10 +107,9 @@ public class BossBarManager {
 
         if (bossBar != null) {
             List<String> displayFormat = config.get().getBossBarSettings().getDisplayFormat();
-            Vector3f pos = PositionUtil.adjustForPlayerOffset(player.getPosition());
 
             String displayText = displayFormat.stream()
-                    .map(line -> new PlaceholderReplacer(pos, player.getSession()).replace(line))
+                    .map(line -> new PlaceholderReplacer(player.getSession()).replace(line))
                     .collect(Collectors.joining("\n"));
 
             bossBar.updateTitle(Component.text(displayText));
@@ -127,9 +126,12 @@ public class BossBarManager {
     /**
      * Encapsulates the logic for replacing placeholders in the display text.
      */
-    private record PlaceholderReplacer(Vector3f pos, GeyserSession session) {
+    private record PlaceholderReplacer(GeyserSession session) {
 
         public String replace(final String line) {
+            final SessionPlayerEntity player = session.getPlayerEntity();
+
+            Vector3f pos = PositionUtil.adjustForPlayerOffset(player.getPosition());
             int[] relativeChunkCoords = ChunkUtil.getRelativeCoordinates(pos);
 
             return line
@@ -143,14 +145,15 @@ public class BossBarManager {
                     .replace("%relative_chunk_y%", String.valueOf(relativeChunkCoords[1]))
                     .replace("%relative_chunk_z%", String.valueOf(relativeChunkCoords[2]))
                     .replace("%chunk_x%", String.valueOf(session.getLastChunkPosition().getX()))
-                    .replace("%chunk_y%", String.valueOf((pos.getFloorY() < 0) ? (pos.getFloorY() - 15) / 16 : pos.getFloorY() / 16))
+                    .replace("%chunk_y%", String.valueOf(ChunkUtil.calculateChunkY(pos.getFloorY())))
                     .replace("%chunk_z%", String.valueOf(session.getLastChunkPosition().getY()))
-                    .replace("%facing%", PositionUtil.getFacingDirection(session.getPlayerEntity().getYaw()))
-                    .replace("%yaw%", String.format("%.1f", session.getPlayerEntity().getYaw()))
-                    .replace("%pitch%", String.format("%.1f", session.getPlayerEntity().getPitch()))
+                    .replace("%facing%", PositionUtil.getFacingDirection(player.getYaw()))
+                    .replace("%yaw%", String.format("%.1f", player.getYaw()))
+                    .replace("%pitch%", String.format("%.1f", player.getPitch()))
                     .replace("%global_chunk_x%", String.valueOf(ChunkUtil.getRelativeChunkCoordinates(pos.getX(), pos.getZ())[0]))
                     .replace("%global_chunk_z%", String.valueOf(ChunkUtil.getRelativeChunkCoordinates(pos.getX(), pos.getZ())[1]))
-                    .replace("%region_file%", ChunkUtil.getRegionFileName(pos.getX(), pos.getZ()));
+                    .replace("%region_file%", ChunkUtil.getRegionFileName(pos.getX(), pos.getZ()))
+                    .replace("%dimension%", String.valueOf(session.getWorldName()));
         }
     }
 }
