@@ -6,10 +6,10 @@ import org.geysermc.geyser.api.command.CommandSource;
 import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPostInitializeEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserShutdownEvent;
-import org.geysermc.geyser.api.event.java.
 import org.geysermc.geyser.api.extension.Extension;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
+import org.stupidcraft.geyserdebuginfo.listener.PlayerJoinListener;
 import org.stupidcraft.geyserdebuginfo.manager.BossBarManager;
 import org.stupidcraft.geyserdebuginfo.manager.PlayerDataManager;
 
@@ -28,6 +28,7 @@ public class GeyserDebugInfo implements Extension {
 
         this.playerDataManager = new PlayerDataManager(dataFolder, this.logger(), false);
         this.bossBarManager = new BossBarManager(playerDataManager);
+        this.eventBus().register(new PlayerJoinListener(this));
     }
 
     @Subscribe
@@ -57,5 +58,13 @@ public class GeyserDebugInfo implements Extension {
                 .build();
 
         event.register(command);
+    }
+
+    public BossBarManager bossBarManager() {
+        return this.bossBarManager;
+    }
+
+    public PlayerDataManager playerDataManager() {
+        return this.playerDataManager;
     }
 }
