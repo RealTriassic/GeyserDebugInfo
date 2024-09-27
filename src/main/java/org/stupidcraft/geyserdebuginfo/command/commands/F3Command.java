@@ -27,7 +27,7 @@ public class F3Command implements BaseCommand {
     @Override
     public Command createCommand() {
         return Command.builder(instance)
-                .name("f3")
+                .name("toggle")
                 .playerOnly(true)
                 .bedrockOnly(true)
                 .source(CommandSource.class)

@@ -30,6 +30,8 @@ public class GeyserDebugInfo implements Extension {
      */
     @Subscribe
     public void onPostInitialize(GeyserPostInitializeEvent event) {
+        long startTime = System.currentTimeMillis();
+
         this.dataFolder = this.dataFolder().toFile();
         if (!dataFolder.exists() && !dataFolder.mkdirs())
             logger().error("Failed to create data folder " + dataFolder.getAbsolutePath());
@@ -38,6 +40,8 @@ public class GeyserDebugInfo implements Extension {
         this.playerDataManager = new PlayerDataManager(dataFolder, this.logger(), false);
         this.bossBarManager = new BossBarManager(this);
         this.eventBus().register(new PlayerJoinListener(this));
+
+        logger().info("Enabled in " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     /**

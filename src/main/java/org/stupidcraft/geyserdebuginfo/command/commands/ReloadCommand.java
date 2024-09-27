@@ -20,8 +20,8 @@ public class ReloadCommand implements BaseCommand {
     public Command createCommand() {
         return Command.builder(instance)
                 .name("reload")
-                .playerOnly(true)
-                .bedrockOnly(true)
+                .playerOnly(false)
+                .bedrockOnly(false)
                 .source(CommandSource.class)
                 .description("Reloads the configuration file.")
                 .executor(this::execute)
