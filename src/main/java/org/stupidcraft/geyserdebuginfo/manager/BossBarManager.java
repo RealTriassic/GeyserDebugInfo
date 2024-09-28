@@ -1,7 +1,6 @@
 package org.stupidcraft.geyserdebuginfo.manager;
 
 import net.kyori.adventure.text.Component;
-import org.cloudburstmc.math.vector.Vector3f;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.session.cache.BossBar;
@@ -9,8 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.stupidcraft.geyserdebuginfo.GeyserDebugInfo;
 import org.stupidcraft.geyserdebuginfo.config.Configuration;
 import org.stupidcraft.geyserdebuginfo.config.ConfigurationContainer;
-import org.stupidcraft.geyserdebuginfo.util.ChunkUtil;
-import org.stupidcraft.geyserdebuginfo.util.PositionUtil;
+import org.stupidcraft.geyserdebuginfo.placeholder.PlaceholderProvider;
+import org.stupidcraft.geyserdebuginfo.placeholder.providers.ChunkPlaceholderProvider;
+import org.stupidcraft.geyserdebuginfo.placeholder.providers.PositionPlaceholderProvider;
+import org.stupidcraft.geyserdebuginfo.placeholder.providers.SessionPlaceholderProvider;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
  */
 public class BossBarManager {
 
+    private final PlaceholderManager placeholderManager;
     private final PlayerDataManager playerDataManager;
     private final HashMap<SessionPlayerEntity, BossBar> bossBars;
     private final ScheduledExecutorService executor;
@@ -35,6 +37,7 @@ public class BossBarManager {
     ) {
         this.config = instance.config();
         this.playerDataManager = instance.playerDataManager();
+        this.placeholderManager = instance.placeholderManager();
         this.bossBars = new HashMap<>();
         this.executor = Executors.newSingleThreadScheduledExecutor();
 
@@ -54,7 +57,7 @@ public class BossBarManager {
             return;
 
         final long entityId = session.getEntityCache().getNextEntityId().incrementAndGet();
-        BossBar bossBar = new BossBar(session, entityId, Component.text("Geyser Debug Information"), 1.0f, 1, 1, 1);
+        BossBar bossBar = new BossBar(session, entityId, Component.empty(), 1.0f, 1, 0, 0);
         player.getSession().getEntityCache().addBossBar(player.getUuid(), bossBar);
         playerDataManager.setF3Enabled(player.getUuid(), true);
         bossBars.put(player, bossBar);
@@ -109,7 +112,7 @@ public class BossBarManager {
             List<String> displayFormat = config.get().getBossBarSettings().getDisplayFormat();
 
             String displayText = displayFormat.stream()
-                    .map(line -> new PlaceholderReplacer(player.getSession()).replace(line))
+                    .map(line -> placeholderManager.setPlaceholders(player.getSession(), line))
                     .collect(Collectors.joining("\n"));
 
             bossBar.updateTitle(Component.text(displayText));
@@ -121,39 +124,5 @@ public class BossBarManager {
      */
     public void shutdown() {
         executor.shutdown();
-    }
-
-    /**
-     * Encapsulates the logic for replacing placeholders in the display text.
-     */
-    private record PlaceholderReplacer(GeyserSession session) {
-
-        public String replace(final String line) {
-            final SessionPlayerEntity player = session.getPlayerEntity();
-
-            Vector3f pos = PositionUtil.adjustForPlayerOffset(player.getPosition());
-            int[] relativeChunkCoords = ChunkUtil.getRelativeCoordinates(pos);
-
-            return line
-                    .replace("%x%", String.format("%.3f", pos.getX()))
-                    .replace("%y%", String.format("%.3f", pos.getY()))
-                    .replace("%z%", String.format("%.3f", pos.getZ()))
-                    .replace("%floor_x%", String.valueOf(pos.getFloorX()))
-                    .replace("%floor_y%", String.valueOf(pos.getFloorY()))
-                    .replace("%floor_z%", String.valueOf(pos.getFloorZ()))
-                    .replace("%relative_chunk_x%", String.valueOf(relativeChunkCoords[0]))
-                    .replace("%relative_chunk_y%", String.valueOf(relativeChunkCoords[1]))
-                    .replace("%relative_chunk_z%", String.valueOf(relativeChunkCoords[2]))
-                    .replace("%chunk_x%", String.valueOf(session.getLastChunkPosition().getX()))
-                    .replace("%chunk_y%", String.valueOf(ChunkUtil.calculateChunkY(pos.getFloorY())))
-                    .replace("%chunk_z%", String.valueOf(session.getLastChunkPosition().getY()))
-                    .replace("%facing%", PositionUtil.getFacingDirection(player.getYaw()))
-                    .replace("%yaw%", String.format("%.1f", player.getYaw()))
-                    .replace("%pitch%", String.format("%.1f", player.getPitch()))
-                    .replace("%global_chunk_x%", String.valueOf(ChunkUtil.getRelativeChunkCoordinates(pos.getX(), pos.getZ())[0]))
-                    .replace("%global_chunk_z%", String.valueOf(ChunkUtil.getRelativeChunkCoordinates(pos.getX(), pos.getZ())[1]))
-                    .replace("%region_file%", ChunkUtil.getRegionFileName(pos.getX(), pos.getZ()))
-                    .replace("%dimension%", String.valueOf(session.getWorldName()));
-        }
     }
 }

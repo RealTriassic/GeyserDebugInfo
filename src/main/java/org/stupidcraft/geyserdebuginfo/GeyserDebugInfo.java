@@ -11,7 +11,11 @@ import org.stupidcraft.geyserdebuginfo.config.Configuration;
 import org.stupidcraft.geyserdebuginfo.config.ConfigurationContainer;
 import org.stupidcraft.geyserdebuginfo.listener.PlayerJoinListener;
 import org.stupidcraft.geyserdebuginfo.manager.BossBarManager;
+import org.stupidcraft.geyserdebuginfo.manager.PlaceholderManager;
 import org.stupidcraft.geyserdebuginfo.manager.PlayerDataManager;
+import org.stupidcraft.geyserdebuginfo.placeholder.providers.ChunkPlaceholderProvider;
+import org.stupidcraft.geyserdebuginfo.placeholder.providers.PositionPlaceholderProvider;
+import org.stupidcraft.geyserdebuginfo.placeholder.providers.SessionPlaceholderProvider;
 
 import java.io.File;
 import java.util.stream.Stream;
@@ -21,6 +25,7 @@ public class GeyserDebugInfo implements Extension {
     private File dataFolder;
     private BossBarManager bossBarManager;
     private PlayerDataManager playerDataManager;
+    private PlaceholderManager placeholderManager;
     private ConfigurationContainer<Configuration> config;
 
     /**
@@ -38,8 +43,15 @@ public class GeyserDebugInfo implements Extension {
 
         loadConfig();
         this.playerDataManager = new PlayerDataManager(dataFolder, this.logger(), false);
+        this.placeholderManager = new PlaceholderManager();
         this.bossBarManager = new BossBarManager(this);
         this.eventBus().register(new PlayerJoinListener(this));
+
+        Stream.of(
+                new ChunkPlaceholderProvider(),
+                new PositionPlaceholderProvider(),
+                new SessionPlaceholderProvider()
+        ).forEach(placeholderManager::registerProvider);
 
         logger().info("Enabled in " + (System.currentTimeMillis() - startTime) + "ms");
     }
@@ -109,5 +121,9 @@ public class GeyserDebugInfo implements Extension {
      */
     public PlayerDataManager playerDataManager() {
         return this.playerDataManager;
+    }
+
+    public PlaceholderManager placeholderManager() {
+        return this.placeholderManager;
     }
 }
