@@ -3,6 +3,11 @@ plugins {
     alias(libs.plugins.shadow)
 }
 
+repositories {
+    mavenCentral()
+    maven("https://repo.opencollab.dev/main/")
+}
+
 dependencies {
     compileOnly(libs.geyser.core)
     implementation(libs.configurate.hocon)
@@ -30,7 +35,7 @@ tasks {
     }
 
     processResources {
-        filesMatching(listOf("extension.yml")) {
+        filesMatching("extension.yml") {
             expand("version" to project.version)
         }
     }
