@@ -30,7 +30,7 @@ tasks {
         listOf(
             "org.spongepowered",
         ).forEach {
-            relocate(it, "org.stupidcraft.geyserdebuginfo.lib.$it")
+            relocate(it, "com.triassic.geyserdebuginfo.lib.$it")
         }
     }
 

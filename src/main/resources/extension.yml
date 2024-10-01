@@ -1,6 +1,6 @@
 id: f3
 name: GeyserDebugInfo
-main: org.stupidcraft.geyserdebuginfo.GeyserDebugInfo
+main: com.triassic.geyserdebuginfo.GeyserDebugInfo
 api: 2.4.1
 version: ${version}
-authors: [StupidCraft, Triassic]
+authors: [Triassic]

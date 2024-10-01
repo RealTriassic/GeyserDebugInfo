@@ -1,4 +1,4 @@
-package org.stupidcraft.geyserdebuginfo.util;
+package com.triassic.geyserdebuginfo.util;
 
 import org.cloudburstmc.math.vector.Vector3f;
 

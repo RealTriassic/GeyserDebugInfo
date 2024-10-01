@@ -1,4 +1,4 @@
-package org.stupidcraft.geyserdebuginfo.command;
+package com.triassic.geyserdebuginfo.command;
 
 import org.geysermc.geyser.api.command.Command;
 

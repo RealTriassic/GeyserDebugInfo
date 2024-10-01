@@ -1,4 +1,4 @@
-package org.stupidcraft.geyserdebuginfo.util;
+package com.triassic.geyserdebuginfo.util;
 
 public class PlaceholderUtil {
 

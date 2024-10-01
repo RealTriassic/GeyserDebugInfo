@@ -1,4 +1,4 @@
-package org.stupidcraft.geyserdebuginfo.config;
+package com.triassic.geyserdebuginfo.config;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;

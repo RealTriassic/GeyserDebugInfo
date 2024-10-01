@@ -1,10 +1,10 @@
-package org.stupidcraft.geyserdebuginfo.command.commands;
+package com.triassic.geyserdebuginfo.command.commands;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.geysermc.geyser.api.command.Command;
 import org.geysermc.geyser.api.command.CommandSource;
-import org.stupidcraft.geyserdebuginfo.GeyserDebugInfo;
-import org.stupidcraft.geyserdebuginfo.command.BaseCommand;
+import com.triassic.geyserdebuginfo.GeyserDebugInfo;
+import com.triassic.geyserdebuginfo.command.BaseCommand;
 
 public class ReloadCommand implements BaseCommand {
 

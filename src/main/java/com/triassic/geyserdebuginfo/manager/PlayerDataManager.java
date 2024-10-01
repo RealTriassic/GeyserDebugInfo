@@ -1,4 +1,4 @@
-package org.stupidcraft.geyserdebuginfo.manager;
+package com.triassic.geyserdebuginfo.manager;
 
 import org.geysermc.geyser.api.extension.ExtensionLogger;
 import org.yaml.snakeyaml.DumperOptions;

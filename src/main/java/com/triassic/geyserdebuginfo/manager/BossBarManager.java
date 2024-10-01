@@ -1,17 +1,13 @@
-package org.stupidcraft.geyserdebuginfo.manager;
+package com.triassic.geyserdebuginfo.manager;
 
 import net.kyori.adventure.text.Component;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.session.cache.BossBar;
 import org.jetbrains.annotations.NotNull;
-import org.stupidcraft.geyserdebuginfo.GeyserDebugInfo;
-import org.stupidcraft.geyserdebuginfo.config.Configuration;
-import org.stupidcraft.geyserdebuginfo.config.ConfigurationContainer;
-import org.stupidcraft.geyserdebuginfo.placeholder.PlaceholderProvider;
-import org.stupidcraft.geyserdebuginfo.placeholder.providers.ChunkPlaceholderProvider;
-import org.stupidcraft.geyserdebuginfo.placeholder.providers.PositionPlaceholderProvider;
-import org.stupidcraft.geyserdebuginfo.placeholder.providers.SessionPlaceholderProvider;
+import com.triassic.geyserdebuginfo.GeyserDebugInfo;
+import com.triassic.geyserdebuginfo.config.Configuration;
+import com.triassic.geyserdebuginfo.config.ConfigurationContainer;
 
 import java.util.HashMap;
 import java.util.List;
