@@ -10,7 +10,7 @@ public class TextModifierProvider extends ModifierProvider {
 
     @Override
     public List<String> getModifiers() {
-        return Arrays.asList("uppercase", "lowercase");
+        return Arrays.asList("uppercase", "lowercase", "capitalized");
     }
 
     @Override
@@ -18,7 +18,15 @@ public class TextModifierProvider extends ModifierProvider {
         return switch (modifier) {
             case "uppercase" -> params.toUpperCase();
             case "lowercase" -> params.toLowerCase();
+            case "capitalized" -> capitalize(params);
             default -> null;
         };
+    }
+
+    private static String capitalize(String text) {
+        if (text == null || text.isEmpty())
+            return text;
+
+        return Character.toUpperCase(text.charAt(0)) + text.substring(1).toLowerCase();
     }
 }
