@@ -2,7 +2,7 @@ package com.triassic.geyserdebuginfo.config;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,13 +14,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ConfigurationContainer<C> {
 
     private final AtomicReference<C> config;
-    private final HoconConfigurationLoader loader;
+    private final YamlConfigurationLoader loader;
     private final Class<C> clazz;
 
     private ConfigurationContainer(
             final C config,
             final Class<C> clazz,
-            final HoconConfigurationLoader loader
+            final YamlConfigurationLoader loader
     ) {
         this.config = new AtomicReference<>(config);
         this.loader = loader;
@@ -28,9 +28,9 @@ public class ConfigurationContainer<C> {
     }
 
     public static <C> ConfigurationContainer<C> load(Path path, Class<C> clazz) throws IOException {
-        path = path.resolve("config.conf");
+        path = path.resolve("config.yml");
         final boolean firstCreation = Files.notExists(path);
-        final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
+        final YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .defaultOptions(opts -> opts
                         .shouldCopyDefaults(true)
                         .header("""
@@ -62,7 +62,7 @@ public class ConfigurationContainer<C> {
                 final CommentedConfigurationNode node = loader.load();
                 config.set(node.get(clazz));
             } catch (ConfigurateException exception) {
-                throw new CompletionException("Could not load config.conf file", exception);
+                throw new CompletionException("Could not load config.yml file", exception);
             }
         });
     }

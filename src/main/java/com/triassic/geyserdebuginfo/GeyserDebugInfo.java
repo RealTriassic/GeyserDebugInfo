@@ -1,5 +1,8 @@
 package com.triassic.geyserdebuginfo;
 
+import com.triassic.geyserdebuginfo.command.commands.ProvidersCommand;
+import com.triassic.geyserdebuginfo.placeholder.modifiers.MathModifierProvider;
+import com.triassic.geyserdebuginfo.placeholder.modifiers.TextModifierProvider;
 import org.geysermc.event.subscribe.Subscribe;
 import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPreInitializeEvent;
@@ -13,9 +16,9 @@ import com.triassic.geyserdebuginfo.listener.PlayerJoinListener;
 import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlaceholderManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
-import com.triassic.geyserdebuginfo.placeholder.providers.ChunkPlaceholderProvider;
-import com.triassic.geyserdebuginfo.placeholder.providers.PositionPlaceholderProvider;
-import com.triassic.geyserdebuginfo.placeholder.providers.SessionPlaceholderProvider;
+import com.triassic.geyserdebuginfo.placeholder.placeholders.ChunkPlaceholderProvider;
+import com.triassic.geyserdebuginfo.placeholder.placeholders.PositionPlaceholderProvider;
+import com.triassic.geyserdebuginfo.placeholder.placeholders.SessionPlaceholderProvider;
 
 import java.io.File;
 import java.util.stream.Stream;
@@ -53,6 +56,11 @@ public class GeyserDebugInfo implements Extension {
                 new SessionPlaceholderProvider()
         ).forEach(placeholderManager::registerProvider);
 
+        Stream.of(
+                new MathModifierProvider(),
+                new TextModifierProvider()
+        ).forEach(placeholderManager::registerProvider);
+
         logger().info("Enabled in " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
@@ -75,7 +83,8 @@ public class GeyserDebugInfo implements Extension {
     public void onDefineCommands(GeyserDefineCommandsEvent event) {
         Stream.of(
                 new F3Command(this),
-                new ReloadCommand(this)
+                new ReloadCommand(this),
+                new ProvidersCommand(this)
         ).forEach(command -> event.register(command.createCommand()));
     }
 

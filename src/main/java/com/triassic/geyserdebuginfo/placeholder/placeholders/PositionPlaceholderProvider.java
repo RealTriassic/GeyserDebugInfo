@@ -1,4 +1,4 @@
-package com.triassic.geyserdebuginfo.placeholder.providers;
+package com.triassic.geyserdebuginfo.placeholder.placeholders;
 
 import org.cloudburstmc.math.vector.Vector3f;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;

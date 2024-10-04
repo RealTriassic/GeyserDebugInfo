@@ -1,4 +1,4 @@
-package com.triassic.geyserdebuginfo.placeholder.providers;
+package com.triassic.geyserdebuginfo.placeholder.placeholders;
 
 import org.geysermc.geyser.session.GeyserSession;
 import org.jetbrains.annotations.NotNull;

@@ -10,7 +10,7 @@ repositories {
 
 dependencies {
     compileOnly(libs.geyser.core)
-    implementation(libs.configurate.hocon)
+    implementation(libs.configurate.yaml)
 }
 
 tasks {

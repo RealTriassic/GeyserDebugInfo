@@ -48,7 +48,7 @@ public abstract class PlaceholderProvider {
      * Resolves placeholders in the given text based on the provided Geyser session.
      *
      * @param session The Geyser session to retrieve context-specific placeholder values.
-     * @param text    The text containing placeholders to resolve.
+     * @param params  The text containing placeholders to resolve.
      * @return The text with placeholders resolved to their respective values.
      */
     @Nullable
