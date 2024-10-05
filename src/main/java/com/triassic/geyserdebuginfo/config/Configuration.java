@@ -21,12 +21,12 @@ public class Configuration {
         private List<String> displayFormat = Arrays.asList(
                 "Geyser Debug Information",
                 "",
-                "%world%",
+                "%session_world%",
                 "",
-                "XYZ: %x% / %y% / %z%",
-                "Block: %x:floor% %y:floor% %z:floor% [%relative_chunk_x% %relative_chunk_y% %relative_chunk_z%]",
-                "Chunk: %chunk_x% %chunk_y% %chunk_z% [%global_chunk_x% %global_chunk_z% in %region_file%]",
-                "Facing: %facing% (%yaw% / %pitch%)"
+                "XYZ: %position_x% / %position_y% / %position_z%",
+                "Block: %position_x:floor% %position_y:floor% %position_z:floor% [%chunk_relative_x% %chunk_relative_y% %chunk_relative_z%]",
+                "Chunk: %chunk_x% %chunk_y% %chunk_z% [%chunk_global_x% %chunk_global_z% in %chunk_region_file%]",
+                "Facing: %position_facing% (%position_yaw% / %position_pitch%)"
         );
 
         public long getRefreshInterval() {

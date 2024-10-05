@@ -32,4 +32,4 @@ jobs:
           draft: true
           prerelease: ${{ contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
           body_path: RELEASE_CHANGELOG
-          files: GeyserDebugInfo-*.jar
+          files: build/libs/*.jar
