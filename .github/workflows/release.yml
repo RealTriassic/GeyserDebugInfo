@@ -1,0 +1,35 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gradle/actions/wrapper-validation@v3
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: 'gradle'
+
+      - name: Build with Gradle
+        run: ./gradlew shadowJar --stacktrace --no-daemon
+
+      - name: Extract changelog
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          sed -n "/^## ${REF:10}/,/^## /{/^## /b;p}" CHANGELOG.md > RELEASE_CHANGELOG
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          prerelease: ${{ contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+          body_path: RELEASE_CHANGELOG
+          files: GeyserDebugInfo-*.jar
