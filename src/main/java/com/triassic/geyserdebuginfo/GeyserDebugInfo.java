@@ -7,7 +7,7 @@ import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPreInitializeEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserShutdownEvent;
 import org.geysermc.geyser.api.extension.Extension;
-import com.triassic.geyserdebuginfo.command.commands.F3Command;
+import com.triassic.geyserdebuginfo.command.commands.ToggleCommand;
 import com.triassic.geyserdebuginfo.command.commands.ReloadCommand;
 import com.triassic.geyserdebuginfo.config.Configuration;
 import com.triassic.geyserdebuginfo.config.ConfigurationContainer;
@@ -81,7 +81,7 @@ public class GeyserDebugInfo implements Extension {
     @Subscribe
     public void onDefineCommands(GeyserDefineCommandsEvent event) {
         Stream.of(
-                new F3Command(this),
+                new ToggleCommand(this),
                 new ReloadCommand(this)
         ).forEach(command -> event.register(command.createCommand()));
     }

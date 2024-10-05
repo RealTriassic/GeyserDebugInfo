@@ -32,10 +32,6 @@ public class PlaceholderManager {
         }
     }
 
-    public Map<String, PlaceholderProvider> getProviders() {
-        return providers;
-    }
-
     /**
      * Resolves placeholders in the given text based on the provided Geyser session.
      * Placeholders should be formatted as %provider_placeholder% (e.g., %chunk_x% or %position_x%).

@@ -10,13 +10,13 @@ import com.triassic.geyserdebuginfo.command.BaseCommand;
 import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 
-public class F3Command implements BaseCommand {
+public class ToggleCommand implements BaseCommand {
 
     private final GeyserDebugInfo instance;
     private final BossBarManager bossBarManager;
     private final PlayerDataManager playerDataManager;
 
-    public F3Command(
+    public ToggleCommand(
             final GeyserDebugInfo instance
     ) {
         this.instance = instance;
