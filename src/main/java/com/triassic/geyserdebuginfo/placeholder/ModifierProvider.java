@@ -23,10 +23,11 @@ public abstract class ModifierProvider {
     }
 
     /**
-     * Resolves modifiers in the given text based on the provided Geyser session.
+     * Handles a request based on the given modifier and parameters.
      *
-     * @param params The text containing placeholders to resolve.
-     * @return The text with placeholders resolved to their respective values.
+     * @param modifier the modifier used for the request, which can be {@code null}
+     * @param params   the parameters associated with the request, must not be {@code null}
+     * @return a response as a {@code String}, or {@code null} if no response is available
      */
     @Nullable
     public String onRequest(final String modifier, @NotNull final String params) {

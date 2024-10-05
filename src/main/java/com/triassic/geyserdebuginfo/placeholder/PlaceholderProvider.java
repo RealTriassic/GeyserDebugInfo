@@ -4,9 +4,6 @@ import org.geysermc.geyser.session.GeyserSession;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-
 /**
  * Abstract class for defining placeholder providers.
  * Subclasses can provide specific placeholder values
@@ -20,29 +17,6 @@ public abstract class PlaceholderProvider {
      * @return The identifier of the provider.
      */
     public abstract String getIdentifier();
-
-    /**
-     * Gets the version of this placeholder provider.
-     *
-     * @return The version string of the provider.
-     */
-    public abstract String getVersion();
-
-    /**
-     * Gets the author of this placeholder provider.
-     *
-     * @return The author name of the provider.
-     */
-    public abstract String getAuthor();
-
-    /**
-     * Retrieves a list of all placeholder keys supported by this provider.
-     *
-     * @return A list of placeholder keys.
-     */
-    public List<String> getPlaceholders() {
-        return Collections.emptyList();
-    }
 
     /**
      * Resolves placeholders in the given text based on the provided Geyser session.

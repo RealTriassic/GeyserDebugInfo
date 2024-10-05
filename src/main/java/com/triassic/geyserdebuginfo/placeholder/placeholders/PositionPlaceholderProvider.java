@@ -1,35 +1,17 @@
 package com.triassic.geyserdebuginfo.placeholder.placeholders;
 
+import com.triassic.geyserdebuginfo.placeholder.PlaceholderProvider;
+import com.triassic.geyserdebuginfo.util.PositionUtil;
 import org.cloudburstmc.math.vector.Vector3f;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
 import org.jetbrains.annotations.NotNull;
-import com.triassic.geyserdebuginfo.placeholder.PlaceholderProvider;
-import com.triassic.geyserdebuginfo.util.PositionUtil;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class PositionPlaceholderProvider extends PlaceholderProvider {
 
     @Override
     public String getIdentifier() {
         return "position";
-    }
-
-    @Override
-    public String getVersion() {
-        return "1.0.0";
-    }
-
-    @Override
-    public String getAuthor() {
-        return "Triassic";
-    }
-
-    @Override
-    public List<String> getPlaceholders() {
-        return Arrays.asList("x", "y", "z", "facing", "yaw", "pitch");
     }
 
     @Override

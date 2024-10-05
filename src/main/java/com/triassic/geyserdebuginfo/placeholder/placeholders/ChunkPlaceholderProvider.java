@@ -1,35 +1,17 @@
 package com.triassic.geyserdebuginfo.placeholder.placeholders;
 
-import org.cloudburstmc.math.vector.Vector3f;
-import org.geysermc.geyser.session.GeyserSession;
-import org.jetbrains.annotations.NotNull;
 import com.triassic.geyserdebuginfo.placeholder.PlaceholderProvider;
 import com.triassic.geyserdebuginfo.util.ChunkUtil;
 import com.triassic.geyserdebuginfo.util.PositionUtil;
-
-import java.util.Arrays;
-import java.util.List;
+import org.cloudburstmc.math.vector.Vector3f;
+import org.geysermc.geyser.session.GeyserSession;
+import org.jetbrains.annotations.NotNull;
 
 public class ChunkPlaceholderProvider extends PlaceholderProvider {
 
     @Override
     public String getIdentifier() {
         return "chunk";
-    }
-
-    @Override
-    public String getVersion() {
-        return "1.0.0";
-    }
-
-    @Override
-    public String getAuthor() {
-        return "Triassic";
-    }
-
-    @Override
-    public List<String> getPlaceholders() {
-        return Arrays.asList("x", "y", "z", "relative_x", "relative_y", "relative_z", "global_x", "global_z", "region_file");
     }
 
     @Override

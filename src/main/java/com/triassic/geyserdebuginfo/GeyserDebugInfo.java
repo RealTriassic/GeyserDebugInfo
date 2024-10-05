@@ -1,6 +1,5 @@
 package com.triassic.geyserdebuginfo;
 
-import com.triassic.geyserdebuginfo.command.commands.ProvidersCommand;
 import com.triassic.geyserdebuginfo.placeholder.modifiers.MathModifierProvider;
 import com.triassic.geyserdebuginfo.placeholder.modifiers.TextModifierProvider;
 import org.geysermc.event.subscribe.Subscribe;
@@ -83,8 +82,7 @@ public class GeyserDebugInfo implements Extension {
     public void onDefineCommands(GeyserDefineCommandsEvent event) {
         Stream.of(
                 new F3Command(this),
-                new ReloadCommand(this),
-                new ProvidersCommand(this)
+                new ReloadCommand(this)
         ).forEach(command -> event.register(command.createCommand()));
     }
 

@@ -22,7 +22,7 @@ public class PlaceholderManager {
 
     public void registerProvider(PlaceholderProvider provider) {
         providers.put(provider.getIdentifier(), provider);
-        logger.info("Registered placeholder provider " + provider.getIdentifier() + " " + "v" + provider.getVersion() + " by " + provider.getAuthor());
+        logger.info("Registered placeholder provider " + provider.getIdentifier());
     }
 
     public void registerProvider(ModifierProvider provider) {
@@ -71,9 +71,9 @@ public class PlaceholderManager {
             String value = null;
 
             if (keyParts.length == 2) {
-                PlaceholderProvider provider = providers.get(keyParts[0]);
-                if (provider != null) {
-                    value = provider.onRequest(session, keyParts[1]);
+                PlaceholderProvider placeholderProvider = providers.get(keyParts[0]);
+                if (placeholderProvider != null) {
+                    value = placeholderProvider.onRequest(session, keyParts[1]);
                 }
             }
 
