@@ -2,6 +2,7 @@ package com.triassic.geyserdebuginfo;
 
 import com.triassic.geyserdebuginfo.placeholder.modifiers.MathModifierProvider;
 import com.triassic.geyserdebuginfo.placeholder.modifiers.TextModifierProvider;
+import com.triassic.geyserdebuginfo.placeholder.placeholders.ServerPlaceholderProvider;
 import org.geysermc.event.subscribe.Subscribe;
 import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPreInitializeEvent;
@@ -15,9 +16,7 @@ import com.triassic.geyserdebuginfo.listener.PlayerJoinListener;
 import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlaceholderManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
-import com.triassic.geyserdebuginfo.placeholder.placeholders.ChunkPlaceholderProvider;
-import com.triassic.geyserdebuginfo.placeholder.placeholders.PositionPlaceholderProvider;
-import com.triassic.geyserdebuginfo.placeholder.placeholders.SessionPlaceholderProvider;
+import com.triassic.geyserdebuginfo.placeholder.placeholders.PlayerPlaceholderProvider;
 
 import java.io.File;
 import java.util.stream.Stream;
@@ -50,9 +49,8 @@ public class GeyserDebugInfo implements Extension {
         this.eventBus().register(new PlayerJoinListener(this));
 
         Stream.of(
-                new ChunkPlaceholderProvider(),
-                new PositionPlaceholderProvider(),
-                new SessionPlaceholderProvider()
+                new PlayerPlaceholderProvider(),
+                new ServerPlaceholderProvider()
         ).forEach(placeholderManager::registerProvider);
 
         Stream.of(
