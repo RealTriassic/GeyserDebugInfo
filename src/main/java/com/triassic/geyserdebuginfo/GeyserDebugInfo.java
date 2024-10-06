@@ -1,22 +1,22 @@
 package com.triassic.geyserdebuginfo;
 
-import com.triassic.geyserdebuginfo.placeholder.modifiers.MathModifierProvider;
-import com.triassic.geyserdebuginfo.placeholder.modifiers.TextModifierProvider;
-import com.triassic.geyserdebuginfo.placeholder.placeholders.ServerPlaceholderProvider;
-import org.geysermc.event.subscribe.Subscribe;
-import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
-import org.geysermc.geyser.api.event.lifecycle.GeyserPreInitializeEvent;
-import org.geysermc.geyser.api.event.lifecycle.GeyserShutdownEvent;
-import org.geysermc.geyser.api.extension.Extension;
-import com.triassic.geyserdebuginfo.command.commands.ToggleCommand;
 import com.triassic.geyserdebuginfo.command.commands.ReloadCommand;
+import com.triassic.geyserdebuginfo.command.commands.ToggleCommand;
 import com.triassic.geyserdebuginfo.config.Configuration;
 import com.triassic.geyserdebuginfo.config.ConfigurationContainer;
 import com.triassic.geyserdebuginfo.listener.PlayerJoinListener;
 import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlaceholderManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
+import com.triassic.geyserdebuginfo.placeholder.modifiers.MathModifierProvider;
+import com.triassic.geyserdebuginfo.placeholder.modifiers.TextModifierProvider;
 import com.triassic.geyserdebuginfo.placeholder.placeholders.PlayerPlaceholderProvider;
+import com.triassic.geyserdebuginfo.placeholder.placeholders.ServerPlaceholderProvider;
+import org.geysermc.event.subscribe.Subscribe;
+import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
+import org.geysermc.geyser.api.event.lifecycle.GeyserPreInitializeEvent;
+import org.geysermc.geyser.api.event.lifecycle.GeyserShutdownEvent;
+import org.geysermc.geyser.api.extension.Extension;
 
 import java.io.File;
 import java.util.stream.Stream;
@@ -44,7 +44,7 @@ public class GeyserDebugInfo implements Extension {
 
         loadConfig();
         this.playerDataManager = new PlayerDataManager(dataFolder, this.logger(), false);
-        this.placeholderManager = new PlaceholderManager(logger());
+        this.placeholderManager = new PlaceholderManager();
         this.bossBarManager = new BossBarManager(this);
         this.eventBus().register(new PlayerJoinListener(this));
 

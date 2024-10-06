@@ -2,7 +2,6 @@ package com.triassic.geyserdebuginfo.manager;
 
 import com.triassic.geyserdebuginfo.placeholder.ModifierProvider;
 import com.triassic.geyserdebuginfo.placeholder.PlaceholderProvider;
-import org.geysermc.geyser.api.extension.ExtensionLogger;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.Map;
@@ -10,25 +9,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PlaceholderManager {
 
-    private final ExtensionLogger logger;
     private final Map<String, PlaceholderProvider> providers = new ConcurrentHashMap<>();
     private final Map<String, ModifierProvider> modifiers = new ConcurrentHashMap<>();
 
-    public PlaceholderManager(
-            final ExtensionLogger logger
-    ) {
-        this.logger = logger;
-    }
-
     public void registerProvider(PlaceholderProvider provider) {
         providers.put(provider.getIdentifier(), provider);
-        logger.info("Registered placeholder provider " + provider.getIdentifier());
     }
 
     public void registerProvider(ModifierProvider provider) {
         for (String modifier : provider.getModifiers()) {
             modifiers.put(modifier, provider);
-            logger.info("Registered modifier " + modifier);
         }
     }
 
