@@ -1,9 +1,9 @@
 package com.triassic.geyserdebuginfo.command.commands;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.geysermc.geyser.api.command.CommandSource;
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import com.triassic.geyserdebuginfo.command.Command;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.geysermc.geyser.api.command.CommandSource;
 
 public class ReloadCommand implements Command {
 
@@ -29,7 +29,11 @@ public class ReloadCommand implements Command {
     }
 
     private void execute(@NonNull CommandSource commandSource, org.geysermc.geyser.api.command.Command command, @NonNull String[] strings) {
-        instance.reload();
-        commandSource.sendMessage("§aGeyserDebugInfo configuration has been reloaded.");
+        if (instance.reloadConfig()) {
+            commandSource.sendMessage("§aGeyserDebugInfo configuration has been reloaded.");
+            System.out.println(instance.getConfig().getConfigVersion());
+        } else {
+            commandSource.sendMessage("§cFailed to reload GeyserDebugInfo configuration, check console for details.");
+        }
     }
 }

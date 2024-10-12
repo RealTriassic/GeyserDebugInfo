@@ -2,8 +2,8 @@ package com.triassic.geyserdebuginfo;
 
 import com.triassic.geyserdebuginfo.command.commands.ReloadCommand;
 import com.triassic.geyserdebuginfo.command.commands.ToggleCommand;
-import com.triassic.geyserdebuginfo.configuration.ConfigurationLoader;
 import com.triassic.geyserdebuginfo.configuration.Configuration;
+import com.triassic.geyserdebuginfo.configuration.ConfigurationContainer;
 import com.triassic.geyserdebuginfo.listener.PlayerJoinListener;
 import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlaceholderManager;
@@ -18,14 +18,19 @@ import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPreInitializeEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserShutdownEvent;
 import org.geysermc.geyser.api.extension.Extension;
+import org.geysermc.geyser.api.extension.ExtensionLogger;
 
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public class GeyserDebugInfo implements Extension {
 
-    private File dataFolder;
-
+    @Getter
+    private Path dataFolder;
+    @Getter
+    private ExtensionLogger logger;
     @Getter
     private Configuration config;
     @Getter
@@ -35,23 +40,34 @@ public class GeyserDebugInfo implements Extension {
     @Getter
     private PlaceholderManager placeholderManager;
 
-    /**
-     * Initializes the extension.
-     * Sets up the data folder, loads configuration,
-     * and registers event listeners.
-     */
+    private ConfigurationContainer configContainer;
+
     @Subscribe
-    public void onPostInitialize(GeyserPreInitializeEvent event) {
+    public void onPreInitialize(GeyserPreInitializeEvent event) {
         long startTime = System.currentTimeMillis();
 
-        this.dataFolder = this.dataFolder().toFile();
-        if (!dataFolder.exists() && !dataFolder.mkdirs())
-            logger().error("Failed to create data folder " + dataFolder.getAbsolutePath());
+        this.logger = logger();
+        this.dataFolder = dataFolder();
 
-        this.config = new ConfigurationLoader(this)
-                .load(Configuration.class);
+        try {
+            if (Files.notExists(dataFolder))
+                Files.createDirectories(dataFolder);
+        } catch (IOException e) {
+            logger.error("Failed to create data folder " + dataFolder.toAbsolutePath(), e);
+            extensionManager().disable(this);
+            return;
+        }
 
-        this.playerDataManager = new PlayerDataManager(dataFolder, this.logger(), false);
+        this.configContainer = new ConfigurationContainer(dataFolder, logger, Configuration.class);
+        this.config = configContainer.get();
+
+        if (config == null) {
+            logger.error("Failed to load the configuration. Please check config.yml for issues.");
+            extensionManager().disable(this);
+            return;
+        }
+
+        this.playerDataManager = new PlayerDataManager(this.dataFolder().toFile(), logger(), false);
         this.placeholderManager = new PlaceholderManager();
         this.bossBarManager = new BossBarManager(this);
         this.eventBus().register(new PlayerJoinListener(this));
@@ -66,15 +82,7 @@ public class GeyserDebugInfo implements Extension {
                 new TextModifierProvider()
         ).forEach(placeholderManager::registerProvider);
 
-        logger().info("Enabled in " + (System.currentTimeMillis() - startTime) + "ms");
-    }
-
-    /**
-     * Loads the configuration file from the specified data folder.
-     * This method attempts to load the configuration file and logs an error if the process fails.
-     */
-    private void loadConfig() {
-
+        logger.info("Enabled in " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
     /**
@@ -98,10 +106,11 @@ public class GeyserDebugInfo implements Extension {
         playerDataManager.savePlayerData();
     }
 
-    /**
-     * Reloads the configuration settings.
-     */
-    public synchronized void reload() {
-        // TODO: add reloading for configuration.
+    public boolean reloadConfig() {
+        boolean reloaded = configContainer.reload();
+        if (reloaded)
+            this.config = configContainer.get();
+
+        return reloaded;
     }
 }

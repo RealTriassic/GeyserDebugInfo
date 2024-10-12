@@ -1,13 +1,13 @@
 package com.triassic.geyserdebuginfo.command.commands;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.geysermc.geyser.api.command.CommandSource;
-import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
-import org.geysermc.geyser.session.GeyserSession;
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import com.triassic.geyserdebuginfo.command.Command;
 import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.geysermc.geyser.api.command.CommandSource;
+import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
+import org.geysermc.geyser.session.GeyserSession;
 
 public class ToggleCommand implements Command {
 

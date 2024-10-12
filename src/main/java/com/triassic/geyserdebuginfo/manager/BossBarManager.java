@@ -1,14 +1,12 @@
 package com.triassic.geyserdebuginfo.manager;
 
-import com.triassic.geyserdebuginfo.configuration.Configuration;
+import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import net.kyori.adventure.text.Component;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.session.cache.BossBar;
 import org.jetbrains.annotations.NotNull;
-import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class BossBarManager {
 
-    private final Configuration config;
+    private final GeyserDebugInfo instance;
     private final PlaceholderManager placeholderManager;
     private final PlayerDataManager playerDataManager;
     private final HashMap<SessionPlayerEntity, BossBar> bossBars;
@@ -31,13 +29,13 @@ public class BossBarManager {
     public BossBarManager(
             final GeyserDebugInfo instance
     ) {
-        this.config = instance.getConfig();
+        this.instance = instance;
         this.playerDataManager = instance.getPlayerDataManager();
         this.placeholderManager = instance.getPlaceholderManager();
         this.bossBars = new HashMap<>();
         this.executor = Executors.newSingleThreadScheduledExecutor();
 
-        executor.scheduleAtFixedRate(this::updateAllBossBars, 0, config.getRefreshInterval(), TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(this::updateAllBossBars, 0, instance.getConfig().getDisplay().getBossBar().getRefreshInterval(), TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -105,7 +103,7 @@ public class BossBarManager {
         BossBar bossBar = bossBars.get(player);
 
         if (bossBar != null) {
-            List<String> displayFormat = config.getDisplayFormat();
+            List<String> displayFormat = instance.getConfig().getDisplay().getBossBar().getText();
 
             String displayText = displayFormat.stream()
                     .map(line -> placeholderManager.setPlaceholders(player.getSession(), line))

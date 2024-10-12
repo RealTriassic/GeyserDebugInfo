@@ -1,13 +1,13 @@
 package com.triassic.geyserdebuginfo.listener;
 
+import com.triassic.geyserdebuginfo.GeyserDebugInfo;
+import com.triassic.geyserdebuginfo.manager.BossBarManager;
+import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 import org.geysermc.event.subscribe.Subscribe;
 import org.geysermc.geyser.api.event.bedrock.SessionDisconnectEvent;
 import org.geysermc.geyser.api.event.bedrock.SessionJoinEvent;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
-import com.triassic.geyserdebuginfo.GeyserDebugInfo;
-import com.triassic.geyserdebuginfo.manager.BossBarManager;
-import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 
 /**
  * This class is responsible for listening for player connection events.
