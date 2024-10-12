@@ -1,14 +1,14 @@
 package com.triassic.geyserdebuginfo.manager;
 
+import com.triassic.geyserdebuginfo.configuration.Configuration;
 import net.kyori.adventure.text.Component;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.session.cache.BossBar;
 import org.jetbrains.annotations.NotNull;
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
-import com.triassic.geyserdebuginfo.config.Configuration;
-import com.triassic.geyserdebuginfo.config.ConfigurationContainer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,22 +22,22 @@ import java.util.stream.Collectors;
  */
 public class BossBarManager {
 
+    private final Configuration config;
     private final PlaceholderManager placeholderManager;
     private final PlayerDataManager playerDataManager;
     private final HashMap<SessionPlayerEntity, BossBar> bossBars;
     private final ScheduledExecutorService executor;
-    private final ConfigurationContainer<Configuration> config;
 
     public BossBarManager(
             final GeyserDebugInfo instance
     ) {
-        this.config = instance.config();
-        this.playerDataManager = instance.playerDataManager();
-        this.placeholderManager = instance.placeholderManager();
+        this.config = instance.getConfig();
+        this.playerDataManager = instance.getPlayerDataManager();
+        this.placeholderManager = instance.getPlaceholderManager();
         this.bossBars = new HashMap<>();
         this.executor = Executors.newSingleThreadScheduledExecutor();
 
-        executor.scheduleAtFixedRate(this::updateAllBossBars, 0, config.get().getBossBarSettings().getRefreshInterval(), TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(this::updateAllBossBars, 0, config.getRefreshInterval(), TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -105,7 +105,7 @@ public class BossBarManager {
         BossBar bossBar = bossBars.get(player);
 
         if (bossBar != null) {
-            List<String> displayFormat = config.get().getBossBarSettings().getDisplayFormat();
+            List<String> displayFormat = config.getDisplayFormat();
 
             String displayText = displayFormat.stream()
                     .map(line -> placeholderManager.setPlaceholders(player.getSession(), line))

@@ -2,8 +2,8 @@ package com.triassic.geyserdebuginfo;
 
 import com.triassic.geyserdebuginfo.command.commands.ReloadCommand;
 import com.triassic.geyserdebuginfo.command.commands.ToggleCommand;
-import com.triassic.geyserdebuginfo.config.Configuration;
-import com.triassic.geyserdebuginfo.config.ConfigurationContainer;
+import com.triassic.geyserdebuginfo.configuration.ConfigurationLoader;
+import com.triassic.geyserdebuginfo.configuration.Configuration;
 import com.triassic.geyserdebuginfo.listener.PlayerJoinListener;
 import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlaceholderManager;
@@ -12,6 +12,7 @@ import com.triassic.geyserdebuginfo.placeholder.modifiers.MathModifierProvider;
 import com.triassic.geyserdebuginfo.placeholder.modifiers.TextModifierProvider;
 import com.triassic.geyserdebuginfo.placeholder.placeholders.PlayerPlaceholderProvider;
 import com.triassic.geyserdebuginfo.placeholder.placeholders.ServerPlaceholderProvider;
+import lombok.Getter;
 import org.geysermc.event.subscribe.Subscribe;
 import org.geysermc.geyser.api.event.lifecycle.GeyserDefineCommandsEvent;
 import org.geysermc.geyser.api.event.lifecycle.GeyserPreInitializeEvent;
@@ -24,10 +25,15 @@ import java.util.stream.Stream;
 public class GeyserDebugInfo implements Extension {
 
     private File dataFolder;
+
+    @Getter
+    private Configuration config;
+    @Getter
     private BossBarManager bossBarManager;
+    @Getter
     private PlayerDataManager playerDataManager;
+    @Getter
     private PlaceholderManager placeholderManager;
-    private ConfigurationContainer<Configuration> config;
 
     /**
      * Initializes the extension.
@@ -42,7 +48,9 @@ public class GeyserDebugInfo implements Extension {
         if (!dataFolder.exists() && !dataFolder.mkdirs())
             logger().error("Failed to create data folder " + dataFolder.getAbsolutePath());
 
-        loadConfig();
+        this.config = new ConfigurationLoader(this)
+                .load(Configuration.class);
+
         this.playerDataManager = new PlayerDataManager(dataFolder, this.logger(), false);
         this.placeholderManager = new PlaceholderManager();
         this.bossBarManager = new BossBarManager(this);
@@ -66,11 +74,7 @@ public class GeyserDebugInfo implements Extension {
      * This method attempts to load the configuration file and logs an error if the process fails.
      */
     private void loadConfig() {
-        try {
-            this.config = ConfigurationContainer.load(dataFolder.toPath(), Configuration.class);
-        } catch (Throwable e) {
-            logger().error("Could not load config.yml file", e);
-        }
+
     }
 
     /**
@@ -98,37 +102,6 @@ public class GeyserDebugInfo implements Extension {
      * Reloads the configuration settings.
      */
     public synchronized void reload() {
-        config.reload();
-    }
-
-    /**
-     * Gets the current configuration container.
-     *
-     * @return the configuration container
-     */
-    public ConfigurationContainer<Configuration> config() {
-        return this.config;
-    }
-
-    /**
-     * Retrieves the {@link BossBarManager} instance associated with this class.
-     *
-     * @return the {@link BossBarManager} used for managing boss bars.
-     */
-    public BossBarManager bossBarManager() {
-        return this.bossBarManager;
-    }
-
-    /**
-     * Retrieves the {@link PlayerDataManager} instance associated with this class.
-     *
-     * @return the {@link PlayerDataManager} used for managing player data.
-     */
-    public PlayerDataManager playerDataManager() {
-        return this.playerDataManager;
-    }
-
-    public PlaceholderManager placeholderManager() {
-        return this.placeholderManager;
+        // TODO: add reloading for configuration.
     }
 }

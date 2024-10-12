@@ -1,5 +1,5 @@
 id: f3
-name: GeyserDebugInfo
+name: ${name}
 main: com.triassic.geyserdebuginfo.GeyserDebugInfo
 api: 2.4.1
 version: ${version}

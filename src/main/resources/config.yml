@@ -1,11 +1,17 @@
 # GeyserDebugInfo Configuration File
 # A Geyser extension that strives to provide F3-like debug information for Bedrock Edition players.
-#
+
 # Report any issues on our GitHub repository:
 # https://github.com/RealTriassic/GeyserDebugInfo
 
 display:
+  actionbar:
+    enabled: true
+    refresh-interval: 50
+    text: "%player_x% %player_y% %player_z%"
   bossbar:
+    enabled: true
+    refresh-interval: 50
     text:
       - "Geyser Debug Information"
       - ""

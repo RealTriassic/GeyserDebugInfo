@@ -20,8 +20,8 @@ public class PlayerJoinListener {
     public PlayerJoinListener(
             final GeyserDebugInfo instance
     ) {
-        this.bossBarManager = instance.bossBarManager();
-        this.playerDataManager = instance.playerDataManager();
+        this.bossBarManager = instance.getBossBarManager();
+        this.playerDataManager = instance.getPlayerDataManager();
     }
 
     /**
