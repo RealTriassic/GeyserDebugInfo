@@ -1,0 +1,7 @@
+package com.triassic.geyserdebuginfo;
+
+class BuildParameters {
+    public static final String VERSION = "{{ version }}";
+    public static final String GIT_BRANCH = "{{ gitBranch | default("unknown") }}";
+    public static final String GIT_COMMIT = "{{ gitCommit | default("unknown") }}";
+}

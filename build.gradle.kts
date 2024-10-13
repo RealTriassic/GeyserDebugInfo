@@ -1,7 +1,10 @@
 plugins {
     java
+    id("net.kyori.blossom") version "2.1.0"
+    id("net.kyori.indra.git") version "3.1.3"
     id("io.freefair.lombok") version "8.10.2"
     id("com.gradleup.shadow") version "8.3.3"
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.9"
 }
 
 repositories {
@@ -43,6 +46,18 @@ tasks {
                 "name" to project.name,
                 "version" to project.version
             )
+        }
+    }
+
+    sourceSets {
+        main {
+            blossom {
+                javaSources {
+                    property("version", project.version.toString())
+                    property("gitBranch", indraGit.branchName())
+                    property("gitCommit", indraGit.commit()?.name)
+                }
+            }
         }
     }
 }
