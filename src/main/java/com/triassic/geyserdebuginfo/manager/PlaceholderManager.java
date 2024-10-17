@@ -22,6 +22,16 @@ public class PlaceholderManager {
         }
     }
 
+    public void unregisterProvider(PlaceholderProvider provider) {
+        providers.remove(provider.getIdentifier());
+    }
+
+    public void unregisterProvider(ModifierProvider provider) {
+        for (String modifier : provider.getModifiers()) {
+            modifiers.remove(modifier);
+        }
+    }
+
     /**
      * Resolves placeholders in the given text based on the provided Geyser session.
      * Placeholders should be formatted as %provider_placeholder% (e.g., %chunk_x% or %position_x%).

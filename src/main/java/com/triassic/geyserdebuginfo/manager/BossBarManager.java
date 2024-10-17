@@ -15,9 +15,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * This class is responsible for creating, updating, and removing boss bars for each player.
- */
 public class BossBarManager {
 
     private final GeyserDebugInfo instance;
@@ -38,12 +35,6 @@ public class BossBarManager {
         executor.scheduleAtFixedRate(this::updateAllBossBars, 0, instance.getConfig().getDisplay().getBossBar().getRefreshInterval(), TimeUnit.MILLISECONDS);
     }
 
-    /**
-     * Creates a boss bar for the specified player if it doesn't already exist.
-     *
-     * @param player The player for whom to create the boss bar.
-     * @throws IllegalArgumentException if the player is null.
-     */
     public void createBossBar(final @NotNull SessionPlayerEntity player) {
         final GeyserSession session = player.getSession();
 
@@ -57,24 +48,10 @@ public class BossBarManager {
         bossBars.put(player, bossBar);
     }
 
-    /**
-     * Removes the boss bar for the specified player and updates the player data
-     * to indicate that the F3 feature is disabled by default.
-     *
-     * @param player The player whose boss bar is to be removed.
-     * @throws IllegalArgumentException if the player is null.
-     */
     public void removeBossBar(final @NotNull SessionPlayerEntity player) {
         removeBossBar(player, true);
     }
 
-    /**
-     * Removes the boss bar for the specified player.
-     *
-     * @param player           The player whose boss bar is to be removed.
-     * @param updatePlayerData Whether to update the player data to indicate that the F3 feature is disabled.
-     * @throws IllegalArgumentException if the player is null.
-     */
     public void removeBossBar(final @NotNull SessionPlayerEntity player, boolean updatePlayerData) {
         BossBar bossBar = bossBars.remove(player);
         if (bossBar != null)
@@ -84,21 +61,12 @@ public class BossBarManager {
             playerDataManager.setF3Enabled(player.getUuid(), false);
     }
 
-    /**
-     * Requests a bossbar update for all tracked bossbars.
-     */
     private void updateAllBossBars() {
         for (Map.Entry<SessionPlayerEntity, BossBar> entry : bossBars.entrySet()) {
             updateBossBar(entry.getKey());
         }
     }
 
-    /**
-     * Updates the boss bar with current up-to-date data.
-     *
-     * @param player The player whose boss bar is to be updated.
-     * @throws IllegalArgumentException if the player is null.
-     */
     private void updateBossBar(final @NotNull SessionPlayerEntity player) {
         BossBar bossBar = bossBars.get(player);
 
@@ -113,9 +81,6 @@ public class BossBarManager {
         }
     }
 
-    /**
-     * Shuts down the executor service, stopping all updates.
-     */
     public void shutdown() {
         executor.shutdown();
     }

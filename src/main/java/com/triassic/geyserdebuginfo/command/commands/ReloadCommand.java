@@ -31,7 +31,6 @@ public class ReloadCommand implements Command {
     private void execute(@NonNull CommandSource commandSource, org.geysermc.geyser.api.command.Command command, @NonNull String[] strings) {
         if (instance.reloadConfig()) {
             commandSource.sendMessage("§aGeyserDebugInfo configuration has been reloaded.");
-            System.out.println(instance.getConfig().getConfigVersion());
         } else {
             commandSource.sendMessage("§cFailed to reload GeyserDebugInfo configuration, check console for details.");
         }

@@ -19,13 +19,6 @@ public class PlayerDataManager {
     private final Map<UUID, Boolean> playerF3States;
     private final boolean defaultEnabled;
 
-    /**
-     * Constructs a new PlayerDataManager and loads player data from the YAML file.
-     *
-     * @param dataFolder     The data folder to use for storing the player data file.
-     * @param logger         The logger used for logging errors and information during operations.
-     * @param defaultEnabled If true, track players with F3 disabled; otherwise, track players with F3 enabled.
-     */
     public PlayerDataManager(
             final File dataFolder,
             final ExtensionLogger logger,
@@ -40,11 +33,6 @@ public class PlayerDataManager {
         loadPlayerData();
     }
 
-    /**
-     * Creates DumperOptions for the YAML configuration.
-     *
-     * @return DumperOptions configured for the YAML.
-     */
     private DumperOptions createDumperOptions() {
         DumperOptions options = new DumperOptions();
         options.setIndent(2);
@@ -52,9 +40,6 @@ public class PlayerDataManager {
         return options;
     }
 
-    /**
-     * Loads player data from the YAML file.
-     */
     private void loadPlayerData() {
         if (!playerDataFile.exists()) return;
 
@@ -70,9 +55,6 @@ public class PlayerDataManager {
         }
     }
 
-    /**
-     * Saves the current player F3 states to the YAML file.
-     */
     public void savePlayerData() {
         try (FileWriter writer = new FileWriter(playerDataFile)) {
             Map<String, Boolean> data = new HashMap<>();
@@ -88,12 +70,6 @@ public class PlayerDataManager {
         }
     }
 
-    /**
-     * Sets the F3 enabled state for a player.
-     *
-     * @param playerUuid The UUID of the player.
-     * @param enabled    The F3 enabled state to set.
-     */
     public void setF3Enabled(UUID playerUuid, boolean enabled) {
         if ((defaultEnabled && enabled) || (!defaultEnabled && !enabled)) {
             playerF3States.remove(playerUuid);
@@ -103,12 +79,6 @@ public class PlayerDataManager {
         savePlayerData();
     }
 
-    /**
-     * Checks if F3 is enabled for the specified player.
-     *
-     * @param playerUuid The UUID of the player.
-     * @return true if F3 is enabled, false otherwise.
-     */
     public boolean isF3Enabled(UUID playerUuid) {
         return playerF3States.getOrDefault(playerUuid, defaultEnabled);
     }

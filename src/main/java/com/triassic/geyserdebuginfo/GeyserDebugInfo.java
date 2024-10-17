@@ -58,7 +58,14 @@ public class GeyserDebugInfo implements Extension {
             return;
         }
 
-        this.configContainer = new ConfigurationContainer(dataFolder, logger, Configuration.class);
+        this.configContainer = new ConfigurationContainer(dataFolder, logger);
+
+        if (!configContainer.load(Configuration.class)) {
+            logger.error("Failed to load the configuration. Please check config.yml for issues.");
+            extensionManager().disable(this);
+            return;
+        }
+
         this.config = configContainer.get();
 
         if (config == null) {
@@ -85,9 +92,6 @@ public class GeyserDebugInfo implements Extension {
         logger.info("Enabled in " + (System.currentTimeMillis() - startTime) + "ms");
     }
 
-    /**
-     * Defines and registers commands for the extension.
-     */
     @Subscribe
     public void onDefineCommands(GeyserDefineCommandsEvent event) {
         Stream.of(
@@ -96,10 +100,6 @@ public class GeyserDebugInfo implements Extension {
         ).forEach(command -> event.register(command.createCommand()));
     }
 
-    /**
-     * Called during the shutdown process.
-     * Cleans up resources and saves player data.
-     */
     @Subscribe
     public void onShutdown(GeyserShutdownEvent event) {
         bossBarManager.shutdown();
@@ -107,7 +107,7 @@ public class GeyserDebugInfo implements Extension {
     }
 
     public boolean reloadConfig() {
-        boolean reloaded = configContainer.reload();
+        boolean reloaded = configContainer.load(configContainer.get().getClass());
         if (reloaded)
             this.config = configContainer.get();
 

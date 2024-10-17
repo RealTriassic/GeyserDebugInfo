@@ -23,15 +23,13 @@ public class ConfigurationContainer {
     private final Path configFile;
     private final ExtensionLogger logger;
     private final YamlConfigurationLoader loader;
-    private final Class<? extends Configuration> configClass;
     private final AtomicReference<Configuration> config = new AtomicReference<>();
 
     public ConfigurationContainer(
             final Path dataFolder,
-            final ExtensionLogger logger,
-            final Class<? extends Configuration> configClass) {
+            final ExtensionLogger logger
+    ) {
         this.logger = logger;
-        this.configClass = configClass;
         this.configFile = dataFolder.resolve("config.yml");
 
         this.loader = YamlConfigurationLoader.builder()
@@ -42,19 +40,11 @@ public class ConfigurationContainer {
                         .shouldCopyDefaults(true)
                         .header(HEADER))
                 .build();
-
-        this.load();
     }
 
-    /**
-     * Loads the configuration from the file.
-     * If loading fails, the previous configuration is retained.
-     *
-     * @return true if the configuration was loaded successfully, false otherwise.
-     */
-    private boolean load() {
+    public boolean load(Class<? extends Configuration> clazz) {
         try {
-            final Configuration loadedConfig = loadConfig();
+            final Configuration loadedConfig = load0(clazz);
             config.set(loadedConfig);
             return true;
         } catch (Throwable e) {
@@ -63,32 +53,16 @@ public class ConfigurationContainer {
         }
     }
 
-    /**
-     * Loads the configuration from the file and creates a new Configuration object.
-     *
-     * @return the loaded Configuration object.
-     * @throws IOException if an error occurs while reading or parsing the file.
-     */
-    private Configuration loadConfig() throws IOException {
-        CommentedConfigurationNode node = loader.load();
-        Configuration loadedConfig = node.get(configClass);
+    private Configuration load0(Class<? extends Configuration> clazz) throws IOException {
+        final CommentedConfigurationNode node = loader.load();
+        final Configuration loadedConfig = node.get(clazz);
 
         if (Files.notExists(configFile)) {
-            node.set(configClass, loadedConfig);
+            node.set(clazz, loadedConfig);
             loader.save(node);
         }
 
         return loadedConfig;
-    }
-
-    /**
-     * Reloads the configuration from the file.
-     * If reloading fails, the previous configuration is retained.
-     *
-     * @return true if the configuration was reloaded successfully, false otherwise.
-     */
-    public boolean reload() {
-        return load();
     }
 
     @Nullable

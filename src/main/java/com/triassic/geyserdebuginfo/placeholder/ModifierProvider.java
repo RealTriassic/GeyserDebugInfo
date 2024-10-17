@@ -6,11 +6,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Abstract class for defining modifier providers.
- * Subclasses can provide specific modifier values
- * to be used within text by the Geyser session.
- */
 public abstract class ModifierProvider {
 
     /**

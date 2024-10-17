@@ -4,11 +4,6 @@ import org.geysermc.geyser.session.GeyserSession;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-/**
- * Abstract class for defining placeholder providers.
- * Subclasses can provide specific placeholder values
- * to be used within text by the Geyser session.
- */
 public abstract class PlaceholderProvider {
 
     /**
