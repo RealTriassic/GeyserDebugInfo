@@ -1,38 +1,23 @@
 package com.triassic.geyserdebuginfo.command.commands;
 
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
-import com.triassic.geyserdebuginfo.command.Command;
+import com.triassic.geyserdebuginfo.command.AbstractCommand;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.geysermc.geyser.api.command.Command;
 import org.geysermc.geyser.api.command.CommandSource;
 
-public class ReloadCommand implements Command {
+public class ReloadCommand extends AbstractCommand {
 
-    private final GeyserDebugInfo instance;
-
-    public ReloadCommand(
-            final GeyserDebugInfo instance
-    ) {
-        this.instance = instance;
+    public ReloadCommand(final GeyserDebugInfo instance) {
+        super(instance, "reload", "Reloads the configuration file", false, false);
     }
 
     @Override
-    public org.geysermc.geyser.api.command.Command createCommand() {
-        return org.geysermc.geyser.api.command.Command.builder(instance)
-                .name("reload")
-                .playerOnly(false)
-                .bedrockOnly(false)
-                .source(CommandSource.class)
-                .description("Reloads the configuration file.")
-                .permission("f3.command.reload")
-                .executor(this::execute)
-                .build();
-    }
-
-    private void execute(@NonNull CommandSource commandSource, org.geysermc.geyser.api.command.Command command, @NonNull String[] strings) {
+    protected void execute(@NonNull CommandSource source, @NonNull Command command, @NonNull String[] args) {
         if (instance.reloadConfig()) {
-            commandSource.sendMessage("§aGeyserDebugInfo configuration has been reloaded.");
+            source.sendMessage("§aGeyserDebugInfo configuration has been reloaded.");
         } else {
-            commandSource.sendMessage("§cFailed to reload GeyserDebugInfo configuration, check console for details.");
+            source.sendMessage("§cFailed to reload GeyserDebugInfo configuration, check console for details.");
         }
     }
 }

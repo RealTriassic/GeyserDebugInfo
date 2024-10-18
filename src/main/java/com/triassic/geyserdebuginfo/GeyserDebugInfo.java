@@ -97,7 +97,7 @@ public class GeyserDebugInfo implements Extension {
         Stream.of(
                 new ToggleCommand(this),
                 new ReloadCommand(this)
-        ).forEach(command -> event.register(command.createCommand()));
+        ).forEach(command -> event.register(command.getCommand()));
     }
 
     @Subscribe
