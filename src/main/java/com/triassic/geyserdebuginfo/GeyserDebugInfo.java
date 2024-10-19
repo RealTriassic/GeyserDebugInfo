@@ -4,6 +4,7 @@ import com.triassic.geyserdebuginfo.command.commands.ReloadCommand;
 import com.triassic.geyserdebuginfo.command.commands.ToggleCommand;
 import com.triassic.geyserdebuginfo.configuration.Configuration;
 import com.triassic.geyserdebuginfo.configuration.ConfigurationContainer;
+import com.triassic.geyserdebuginfo.display.DisplayManager;
 import com.triassic.geyserdebuginfo.listener.PlayerJoinListener;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 import com.triassic.geyserdebuginfo.placeholder.PlaceholderManager;
@@ -36,6 +37,8 @@ public class GeyserDebugInfo implements Extension {
     private PlayerDataManager playerDataManager;
     @Getter
     private PlaceholderManager placeholderManager;
+    @Getter
+    private DisplayManager displayManager;
 
     private ConfigurationContainer configContainer;
 
@@ -73,17 +76,18 @@ public class GeyserDebugInfo implements Extension {
 
         this.playerDataManager = new PlayerDataManager(this.dataFolder().toFile(), logger(), false);
         this.placeholderManager = new PlaceholderManager();
+        this.displayManager = new DisplayManager(this);
         this.eventBus().register(new PlayerJoinListener(this));
 
         Stream.of(
                 new PlayerPlaceholderProvider(),
                 new ServerPlaceholderProvider()
-        ).forEach(placeholderManager::registerProvider);
+        ).forEach(placeholderManager::register);
 
         Stream.of(
                 new MathModifierProvider(),
                 new TextModifierProvider()
-        ).forEach(placeholderManager::registerProvider);
+        ).forEach(placeholderManager::register);
 
         logger.info("Enabled in " + (System.currentTimeMillis() - startTime) + "ms");
     }

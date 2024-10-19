@@ -12,7 +12,6 @@ public class ActionBarDisplay extends Display {
 
     private final GeyserDebugInfo instance;
     private final SetTitlePacket titlePacket;
-    private final PlaceholderManager placeholderManager;
 
     public ActionBarDisplay(GeyserDebugInfo instance, @NotNull GeyserSession session) {
         super(session, DisplayType.ACTIONBAR, 50);
@@ -25,12 +24,11 @@ public class ActionBarDisplay extends Display {
         titlePacket.setPlatformOnlineId("");
 
         this.instance = instance;
-        this.placeholderManager = instance.getPlaceholderManager();
     }
 
     @Override
     public void updateDisplay() {
-        titlePacket.setText(placeholderManager.setPlaceholders(session, instance.getConfig().getDisplay().getActionBar().getText()));
+        titlePacket.setText(PlaceholderManager.setPlaceholders(session, instance.getConfig().getDisplay().getActionBar().getText()));
         session.sendUpstreamPacket(titlePacket);
     }
 

@@ -16,22 +16,21 @@ public class BossBarDisplay extends Display {
 
     private final GeyserDebugInfo instance;
     private final BossBar bossBar;
-    private final PlaceholderManager placeholderManager;
 
-    public BossBarDisplay(GeyserDebugInfo instance, @NotNull GeyserSession session, long entityId) {
+    public BossBarDisplay(GeyserDebugInfo instance, @NotNull GeyserSession session) {
         super(session, DisplayType.BOSSBAR, 50);
+        long entityId = session.getEntityCache().getNextEntityId().incrementAndGet();
         this.bossBar = new BossBar(session, entityId, Component.empty(), 1.0f, 1, 0, 0);
         session.getEntityCache().addBossBar(session.playerUuid(), bossBar);
 
         this.instance = instance;
-        this.placeholderManager = instance.getPlaceholderManager();
     }
 
     @Override
     public void updateDisplay() {
         List<String> displayFormat = instance.getConfig().getDisplay().getBossBar().getText();
         String displayText = displayFormat.stream()
-                .map(line -> placeholderManager.setPlaceholders(session, line))
+                .map(line -> PlaceholderManager.setPlaceholders(session, line))
                 .collect(Collectors.joining("\n"));
 
         bossBar.updateTitle(Component.text(displayText));

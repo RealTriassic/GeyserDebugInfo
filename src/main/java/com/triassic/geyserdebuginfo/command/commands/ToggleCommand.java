@@ -14,15 +14,13 @@ import java.util.UUID;
 
 public class ToggleCommand extends AbstractCommand {
 
-    private final GeyserDebugInfo instance;
     private final PlayerDataManager playerDataManager;
     private final DisplayManager displayManager;
 
     public ToggleCommand(final GeyserDebugInfo instance) {
         super(instance, "toggle", "Toggle the display of the F3 debug menu", true, true);
-        this.instance = instance;
         this.playerDataManager = instance.getPlayerDataManager();
-        this.displayManager = new DisplayManager(instance);
+        this.displayManager = instance.getDisplayManager();
     }
 
     @Override

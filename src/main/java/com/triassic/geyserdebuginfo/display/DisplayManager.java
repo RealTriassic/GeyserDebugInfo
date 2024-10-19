@@ -7,6 +7,7 @@ import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -32,7 +33,8 @@ public class DisplayManager {
     public void subscribePlayer(final GeyserSession session, final DisplayType displayType) {
         asyncExecutor.submit(() -> {
             Display display = createDisplay(session, displayType);
-            activeDisplays.computeIfAbsent(session, k -> ConcurrentHashMap.newKeySet()).add(display);
+            Set<Display> displays = activeDisplays.computeIfAbsent(session, k -> ConcurrentHashMap.newKeySet());
+            displays.add(display);
             display.startUpdating(executor);
 
             playerDataManager.setDisplayEnabled(session.playerUuid(), displayType, true);
@@ -40,32 +42,25 @@ public class DisplayManager {
     }
 
     public void unsubscribePlayer(final GeyserSession session, final DisplayType displayType) {
-        asyncExecutor.submit(() -> {
-            Set<Display> displays = activeDisplays.get(session);
-            if (displays != null) {
-                displays.stream()
-                        .filter(display -> display.getDisplayType() == displayType)
-                        .findFirst()
-                        .ifPresent(display -> {
-                            displays.remove(display);
-                            display.stopUpdating();
-                            if (displays.isEmpty()) {
-                                activeDisplays.remove(session);
-                            }
-                        });
+        asyncExecutor.submit(() -> Optional.ofNullable(activeDisplays.get(session)).ifPresent(displays -> {
+            for (Display display : displays) {
+                if (display.getDisplayType() == displayType) {
+                    displays.remove(display);
+                    display.stopUpdating();
+                    if (displays.isEmpty()) {
+                        activeDisplays.remove(session);
+                    }
+                    playerDataManager.setDisplayEnabled(session.playerUuid(), displayType, false);
+                    break;
+                }
             }
-        });
-
-        playerDataManager.setDisplayEnabled(session.playerUuid(), displayType, false);
+        }));
     }
 
     private Display createDisplay(final GeyserSession session, final DisplayType displayType) {
         return switch (displayType) {
             case ACTIONBAR -> new ActionBarDisplay(instance, session);
-            case BOSSBAR -> {
-                long entityId = session.getEntityCache().getNextEntityId().incrementAndGet();
-                yield new BossBarDisplay(instance, session, entityId);
-            }
+            case BOSSBAR -> new BossBarDisplay(instance, session);
         };
     }
 

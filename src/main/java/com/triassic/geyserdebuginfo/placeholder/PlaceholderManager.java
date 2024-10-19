@@ -1,34 +1,15 @@
 package com.triassic.geyserdebuginfo.placeholder;
 
 import org.geysermc.geyser.session.GeyserSession;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PlaceholderManager {
 
-    private final Map<String, PlaceholderProvider> providers = new ConcurrentHashMap<>();
-    private final Map<String, ModifierProvider> modifiers = new ConcurrentHashMap<>();
-
-    public void registerProvider(PlaceholderProvider provider) {
-        providers.put(provider.getIdentifier(), provider);
-    }
-
-    public void registerProvider(ModifierProvider provider) {
-        for (String modifier : provider.getModifiers()) {
-            modifiers.put(modifier, provider);
-        }
-    }
-
-    public void unregisterProvider(PlaceholderProvider provider) {
-        providers.remove(provider.getIdentifier());
-    }
-
-    public void unregisterProvider(ModifierProvider provider) {
-        for (String modifier : provider.getModifiers()) {
-            modifiers.remove(modifier);
-        }
-    }
+    private static final Map<String, PlaceholderProvider> providers = new ConcurrentHashMap<>();
+    private static final Map<String, ModifierProvider> modifiers = new ConcurrentHashMap<>();
 
     /**
      * Resolves placeholders in the given text based on the provided Geyser session.
@@ -38,7 +19,8 @@ public class PlaceholderManager {
      * @param text    The text containing placeholders to resolve.
      * @return The text with placeholders resolved to their respective values.
      */
-    public String setPlaceholders(GeyserSession session, String text) {
+    @NotNull
+    public static String setPlaceholders(final GeyserSession session, final @NotNull String text) {
         StringBuilder finalResult = new StringBuilder();
         int cursor = 0;
 
@@ -87,5 +69,15 @@ public class PlaceholderManager {
         }
 
         return finalResult.toString();
+    }
+
+    public void register(PlaceholderProvider provider) {
+        providers.put(provider.getIdentifier(), provider);
+    }
+
+    public void register(ModifierProvider provider) {
+        for (String modifier : provider.getModifiers()) {
+            modifiers.put(modifier, provider);
+        }
     }
 }
