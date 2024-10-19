@@ -1,7 +1,6 @@
 package com.triassic.geyserdebuginfo.listener;
 
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
-import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 import org.geysermc.event.subscribe.Subscribe;
 import org.geysermc.geyser.api.event.bedrock.SessionDisconnectEvent;
@@ -9,39 +8,29 @@ import org.geysermc.geyser.api.event.bedrock.SessionJoinEvent;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
 
-/**
- * This class is responsible for listening for player connection events.
- */
 public class PlayerJoinListener {
 
-    private final BossBarManager bossBarManager;
     private final PlayerDataManager playerDataManager;
 
     public PlayerJoinListener(
             final GeyserDebugInfo instance
     ) {
-        this.bossBarManager = instance.getBossBarManager();
         this.playerDataManager = instance.getPlayerDataManager();
     }
 
-    /**
-     * Called when a player joins.
-     */
     @Subscribe
     public void onJoin(final SessionJoinEvent event) {
         final GeyserSession session = (GeyserSession) event.connection();
         final SessionPlayerEntity player = session.getPlayerEntity();
 
-        if (playerDataManager.isF3Enabled(player.getUuid()))
-            bossBarManager.createBossBar(player);
+        if (playerDataManager.isF3Enabled(player.getUuid())) {
+            // TODO: Re-implement this.
+        }
     }
 
-    /**
-     * Called when a player disconnects.
-     */
     @Subscribe
     public void onDisconnect(final SessionDisconnectEvent event) {
         final GeyserSession session = (GeyserSession) event.connection();
-        bossBarManager.removeBossBar(session.getPlayerEntity(), false);
+        // TODO: Remove Bossbar
     }
 }

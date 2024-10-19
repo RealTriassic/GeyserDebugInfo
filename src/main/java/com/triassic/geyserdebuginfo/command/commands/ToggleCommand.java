@@ -2,35 +2,34 @@ package com.triassic.geyserdebuginfo.command.commands;
 
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import com.triassic.geyserdebuginfo.command.AbstractCommand;
-import com.triassic.geyserdebuginfo.manager.BossBarManager;
+import com.triassic.geyserdebuginfo.display.DisplayType;
+import com.triassic.geyserdebuginfo.manager.DisplayManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 import org.geysermc.geyser.api.command.Command;
 import org.geysermc.geyser.api.command.CommandSource;
-import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
 import org.jetbrains.annotations.NotNull;
 
 public class ToggleCommand extends AbstractCommand {
 
-    private final BossBarManager bossBarManager;
+    private final GeyserDebugInfo instance;
     private final PlayerDataManager playerDataManager;
+    private final DisplayManager displayManager;
 
     public ToggleCommand(final GeyserDebugInfo instance) {
         super(instance, "toggle", "Toggle the display of the F3 debug menu", true, true);
-        this.bossBarManager = instance.getBossBarManager();
+        this.instance = instance;
         this.playerDataManager = instance.getPlayerDataManager();
+        this.displayManager = new DisplayManager(instance);
     }
 
     @Override
     protected void execute(@NotNull CommandSource source, @NotNull Command command, @NotNull String[] args) {
         final GeyserSession session = (GeyserSession) source.connection();
-        final SessionPlayerEntity player = session.getPlayerEntity();
 
-        if (player != null && !playerDataManager.isF3Enabled(player.getUuid())) {
-            bossBarManager.createBossBar(player);
-        } else {
-            bossBarManager.removeBossBar(player);
-            playerDataManager.setF3Enabled(player.getUuid(), false);
+        switch (args[0]) {
+            case "actionbar" -> displayManager.subscribePlayer(session, DisplayType.ACTIONBAR);
+            case "bossbar" -> displayManager.subscribePlayer(session, DisplayType.BOSSBAR);
         }
     }
 }

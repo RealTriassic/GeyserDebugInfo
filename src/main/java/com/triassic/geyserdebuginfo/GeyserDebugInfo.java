@@ -5,7 +5,6 @@ import com.triassic.geyserdebuginfo.command.commands.ToggleCommand;
 import com.triassic.geyserdebuginfo.configuration.Configuration;
 import com.triassic.geyserdebuginfo.configuration.ConfigurationContainer;
 import com.triassic.geyserdebuginfo.listener.PlayerJoinListener;
-import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlaceholderManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 import com.triassic.geyserdebuginfo.placeholder.modifiers.MathModifierProvider;
@@ -33,8 +32,6 @@ public class GeyserDebugInfo implements Extension {
     private ExtensionLogger logger;
     @Getter
     private Configuration config;
-    @Getter
-    private BossBarManager bossBarManager;
     @Getter
     private PlayerDataManager playerDataManager;
     @Getter
@@ -76,7 +73,6 @@ public class GeyserDebugInfo implements Extension {
 
         this.playerDataManager = new PlayerDataManager(this.dataFolder().toFile(), logger(), false);
         this.placeholderManager = new PlaceholderManager();
-        this.bossBarManager = new BossBarManager(this);
         this.eventBus().register(new PlayerJoinListener(this));
 
         Stream.of(
@@ -102,7 +98,6 @@ public class GeyserDebugInfo implements Extension {
 
     @Subscribe
     public void onShutdown(GeyserShutdownEvent event) {
-        bossBarManager.shutdown();
         playerDataManager.savePlayerData();
     }
 
