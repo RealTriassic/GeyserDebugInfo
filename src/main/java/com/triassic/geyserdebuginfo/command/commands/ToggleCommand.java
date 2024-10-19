@@ -3,7 +3,7 @@ package com.triassic.geyserdebuginfo.command.commands;
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import com.triassic.geyserdebuginfo.command.AbstractCommand;
 import com.triassic.geyserdebuginfo.display.DisplayType;
-import com.triassic.geyserdebuginfo.manager.DisplayManager;
+import com.triassic.geyserdebuginfo.display.DisplayManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 import org.geysermc.geyser.api.command.Command;
 import org.geysermc.geyser.api.command.CommandSource;

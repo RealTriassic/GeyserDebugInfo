@@ -1,7 +1,5 @@
-package com.triassic.geyserdebuginfo.manager;
+package com.triassic.geyserdebuginfo.placeholder;
 
-import com.triassic.geyserdebuginfo.placeholder.ModifierProvider;
-import com.triassic.geyserdebuginfo.placeholder.PlaceholderProvider;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.Map;

@@ -5,7 +5,7 @@ import com.triassic.geyserdebuginfo.command.commands.ToggleCommand;
 import com.triassic.geyserdebuginfo.configuration.Configuration;
 import com.triassic.geyserdebuginfo.configuration.ConfigurationContainer;
 import com.triassic.geyserdebuginfo.listener.PlayerJoinListener;
-import com.triassic.geyserdebuginfo.manager.PlaceholderManager;
+import com.triassic.geyserdebuginfo.placeholder.PlaceholderManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 import com.triassic.geyserdebuginfo.placeholder.modifiers.MathModifierProvider;
 import com.triassic.geyserdebuginfo.placeholder.modifiers.TextModifierProvider;

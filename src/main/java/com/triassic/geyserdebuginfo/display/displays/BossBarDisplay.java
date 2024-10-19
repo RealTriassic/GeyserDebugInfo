@@ -3,7 +3,7 @@ package com.triassic.geyserdebuginfo.display.displays;
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import com.triassic.geyserdebuginfo.display.Display;
 import com.triassic.geyserdebuginfo.display.DisplayType;
-import com.triassic.geyserdebuginfo.manager.PlaceholderManager;
+import com.triassic.geyserdebuginfo.placeholder.PlaceholderManager;
 import net.kyori.adventure.text.Component;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.session.cache.BossBar;

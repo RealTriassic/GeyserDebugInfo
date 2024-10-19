@@ -1,8 +1,6 @@
-package com.triassic.geyserdebuginfo.manager;
+package com.triassic.geyserdebuginfo.display;
 
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
-import com.triassic.geyserdebuginfo.display.Display;
-import com.triassic.geyserdebuginfo.display.DisplayType;
 import com.triassic.geyserdebuginfo.display.displays.ActionBarDisplay;
 import com.triassic.geyserdebuginfo.display.displays.BossBarDisplay;
 import org.geysermc.geyser.session.GeyserSession;
