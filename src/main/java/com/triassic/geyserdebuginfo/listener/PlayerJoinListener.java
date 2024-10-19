@@ -23,9 +23,7 @@ public class PlayerJoinListener {
         final GeyserSession session = (GeyserSession) event.connection();
         final SessionPlayerEntity player = session.getPlayerEntity();
 
-        if (playerDataManager.isF3Enabled(player.getUuid())) {
-            // TODO: Re-implement this.
-        }
+        // TODO: Re-implement this.
     }
 
     @Subscribe

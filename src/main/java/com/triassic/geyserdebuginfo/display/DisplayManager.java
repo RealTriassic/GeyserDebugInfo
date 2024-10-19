@@ -3,6 +3,7 @@ package com.triassic.geyserdebuginfo.display;
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import com.triassic.geyserdebuginfo.display.displays.ActionBarDisplay;
 import com.triassic.geyserdebuginfo.display.displays.BossBarDisplay;
+import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
 import org.geysermc.geyser.session.GeyserSession;
 
 import java.util.Map;
@@ -18,12 +19,14 @@ public class DisplayManager {
     private final Map<GeyserSession, Set<Display>> activeDisplays;
     private final ScheduledExecutorService executor;
     private final ExecutorService asyncExecutor;
+    private final PlayerDataManager playerDataManager;
 
     public DisplayManager(GeyserDebugInfo instance) {
         this.instance = instance;
         this.activeDisplays = new ConcurrentHashMap<>();
         this.executor = Executors.newScheduledThreadPool(10);
         this.asyncExecutor = Executors.newCachedThreadPool();
+        this.playerDataManager = instance.getPlayerDataManager();
     }
 
     public void subscribePlayer(final GeyserSession session, final DisplayType displayType) {
@@ -31,6 +34,8 @@ public class DisplayManager {
             Display display = createDisplay(session, displayType);
             activeDisplays.computeIfAbsent(session, k -> ConcurrentHashMap.newKeySet()).add(display);
             display.startUpdating(executor);
+
+            playerDataManager.setDisplayEnabled(session.playerUuid(), displayType, true);
         });
     }
 
@@ -50,6 +55,8 @@ public class DisplayManager {
                         });
             }
         });
+
+        playerDataManager.setDisplayEnabled(session.playerUuid(), displayType, false);
     }
 
     private Display createDisplay(final GeyserSession session, final DisplayType displayType) {
