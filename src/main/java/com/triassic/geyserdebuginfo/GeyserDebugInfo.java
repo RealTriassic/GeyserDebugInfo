@@ -98,7 +98,7 @@ public class GeyserDebugInfo implements Extension {
 
     @Subscribe
     public void onShutdown(GeyserShutdownEvent event) {
-        playerDataManager.savePlayerData();
+        playerDataManager.save();
     }
 
     public boolean reloadConfig() {
