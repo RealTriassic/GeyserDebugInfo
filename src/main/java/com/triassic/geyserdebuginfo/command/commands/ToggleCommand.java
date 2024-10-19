@@ -4,11 +4,11 @@ import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import com.triassic.geyserdebuginfo.command.AbstractCommand;
 import com.triassic.geyserdebuginfo.manager.BossBarManager;
 import com.triassic.geyserdebuginfo.manager.PlayerDataManager;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.geysermc.geyser.api.command.Command;
 import org.geysermc.geyser.api.command.CommandSource;
 import org.geysermc.geyser.entity.type.player.SessionPlayerEntity;
 import org.geysermc.geyser.session.GeyserSession;
+import org.jetbrains.annotations.NotNull;
 
 public class ToggleCommand extends AbstractCommand {
 
@@ -22,7 +22,7 @@ public class ToggleCommand extends AbstractCommand {
     }
 
     @Override
-    protected void execute(@NonNull CommandSource source, @NonNull Command command, @NonNull String[] args) {
+    protected void execute(@NotNull CommandSource source, @NotNull Command command, @NotNull String[] args) {
         final GeyserSession session = (GeyserSession) source.connection();
         final SessionPlayerEntity player = session.getPlayerEntity();
 

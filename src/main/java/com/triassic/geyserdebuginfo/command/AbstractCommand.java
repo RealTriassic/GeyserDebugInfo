@@ -2,9 +2,9 @@ package com.triassic.geyserdebuginfo.command;
 
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import lombok.Getter;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.geysermc.geyser.api.command.Command;
 import org.geysermc.geyser.api.command.CommandSource;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractCommand {
 
@@ -31,5 +31,5 @@ public abstract class AbstractCommand {
                 .build();
     }
 
-    protected abstract void execute(@NonNull CommandSource source, @NonNull Command command, @NonNull String[] args);
+    protected abstract void execute(@NotNull CommandSource source, @NotNull Command command, @NotNull String[] args);
 }

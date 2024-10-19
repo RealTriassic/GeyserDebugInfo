@@ -2,9 +2,9 @@ package com.triassic.geyserdebuginfo.command.commands;
 
 import com.triassic.geyserdebuginfo.GeyserDebugInfo;
 import com.triassic.geyserdebuginfo.command.AbstractCommand;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.geysermc.geyser.api.command.Command;
 import org.geysermc.geyser.api.command.CommandSource;
+import org.jetbrains.annotations.NotNull;
 
 public class ReloadCommand extends AbstractCommand {
 
@@ -13,7 +13,7 @@ public class ReloadCommand extends AbstractCommand {
     }
 
     @Override
-    protected void execute(@NonNull CommandSource source, @NonNull Command command, @NonNull String[] args) {
+    protected void execute(@NotNull CommandSource source, @NotNull Command command, @NotNull String[] args) {
         if (instance.reloadConfig()) {
             source.sendMessage("§aGeyserDebugInfo configuration has been reloaded.");
         } else {
