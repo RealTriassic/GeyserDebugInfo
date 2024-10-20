@@ -21,7 +21,6 @@ import org.geysermc.geyser.api.extension.Extension;
 import org.geysermc.geyser.api.extension.ExtensionLogger;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
@@ -54,7 +53,7 @@ public class GeyserDebugInfo implements Extension {
             return;
         }
 
-        this.playerDataManager = new PlayerDataManager(this.dataFolder().toFile(), logger(), false);
+        this.playerDataManager = new PlayerDataManager(this.dataFolder().toFile(), logger());
         this.placeholderManager = new PlaceholderManager();
         this.displayManager = new DisplayManager(this);
         this.eventBus().register(new PlayerJoinListener(this));
@@ -82,6 +81,6 @@ public class GeyserDebugInfo implements Extension {
 
     @Subscribe
     public void onShutdown(GeyserShutdownEvent event) {
-        playerDataManager.save();
+        // playerDataManager.save();
     }
 }

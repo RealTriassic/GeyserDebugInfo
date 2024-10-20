@@ -1,100 +1,104 @@
 package com.triassic.geyserdebuginfo.manager;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.triassic.geyserdebuginfo.display.DisplayType;
+import lombok.Getter;
+import lombok.Setter;
 import org.geysermc.geyser.api.extension.ExtensionLogger;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 
 public class PlayerDataManager {
 
-    private final File playerDataFile;
+    private final File playerDataFolder;
     private final ExtensionLogger logger;
-    private final Yaml yaml;
-    private final Map<UUID, Map<DisplayType, Boolean>> playerDisplayStates;
-    private final boolean defaultEnabled;
+    private final ObjectMapper objectMapper;
+    private final Map<UUID, Set<DisplayType>> playerDisplayStates;
 
-    public PlayerDataManager(
-            final File dataFolder,
-            final ExtensionLogger logger,
-            final boolean defaultEnabled
-    ) {
-        this.playerDataFile = new File(dataFolder, "playerdata.yml");
+    public PlayerDataManager(File dataFolder, ExtensionLogger logger) {
+        this.playerDataFolder = new File(dataFolder, "playerdata");
         this.logger = logger;
-        this.yaml = new Yaml(createDumperOptions());
+        this.objectMapper = new ObjectMapper()
+                .enable(SerializationFeature.INDENT_OUTPUT);
         this.playerDisplayStates = new HashMap<>();
-        this.defaultEnabled = defaultEnabled;
 
-        load();
+        if (!playerDataFolder.exists() && !playerDataFolder.mkdirs()) {
+            logger.error("Failed to create player data folder at " + playerDataFolder.getAbsolutePath());
+        }
+
+        loadAll();
     }
 
-    private DumperOptions createDumperOptions() {
-        DumperOptions options = new DumperOptions();
-        options.setIndent(2);
-        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        return options;
-    }
+    private void loadAll() {
+        File[] files = playerDataFolder.listFiles((dir, name) -> name.endsWith(".json"));
+        if (files == null) return;
 
-    private void load() {
-        if (!playerDataFile.exists()) return;
-
-        try (FileReader reader = new FileReader(playerDataFile)) {
-            Map<String, Map<String, Boolean>> data = yaml.load(reader);
-            if (data != null) {
-                for (Map.Entry<String, Map<String, Boolean>> entry : data.entrySet()) {
-                    UUID playerUuid = UUID.fromString(entry.getKey());
-                    Map<DisplayType, Boolean> displayStates = new HashMap<>();
-                    for (Map.Entry<String, Boolean> stateEntry : entry.getValue().entrySet()) {
-                        displayStates.put(DisplayType.valueOf(stateEntry.getKey()), stateEntry.getValue());
-                    }
-                    playerDisplayStates.put(playerUuid, displayStates);
+        for (File file : files) {
+            try {
+                UUID playerUuid = UUID.fromString(file.getName().replace(".json", ""));
+                PlayerData data = objectMapper.readValue(file, PlayerData.class);
+                Set<DisplayType> enabledDisplays = new HashSet<>();
+                for (String display : data.getEnabledDisplays()) {
+                    enabledDisplays.add(DisplayType.valueOf(display));
                 }
+                playerDisplayStates.put(playerUuid, enabledDisplays);
+            } catch (IOException | IllegalArgumentException e) {
+                logger.error("Failed to load player data from file: " + file.getName(), e);
             }
-        } catch (Throwable error) {
-            logger.error("Failed to load player data file", error);
         }
     }
 
-    public void save() {
-        try (FileWriter writer = new FileWriter(playerDataFile)) {
-            Map<String, Map<String, Boolean>> data = new HashMap<>();
-            for (Map.Entry<UUID, Map<DisplayType, Boolean>> entry : playerDisplayStates.entrySet()) {
-                UUID playerUuid = entry.getKey();
-                Map<String, Boolean> stateMap = new HashMap<>();
-                for (Map.Entry<DisplayType, Boolean> stateEntry : entry.getValue().entrySet()) {
-                    Boolean enabled = stateEntry.getValue();
-                    if (enabled != defaultEnabled) {
-                        stateMap.put(stateEntry.getKey().name(), enabled);
-                    }
-                }
-                if (!stateMap.isEmpty()) {
-                    data.put(playerUuid.toString(), stateMap);
-                }
-            }
-            yaml.dump(data, writer);
-        } catch (Throwable error) {
-            logger.error("Failed to save player data to file", error);
+    public void save(UUID playerUuid) {
+        Set<DisplayType> enabledDisplays = playerDisplayStates.get(playerUuid);
+        if (enabledDisplays == null) return;
+
+        File playerFile = new File(playerDataFolder, playerUuid + ".json");
+        try {
+            PlayerData data = new PlayerData();
+            data.setEnabledDisplays(
+                    enabledDisplays.stream()
+                            .map(DisplayType::name)
+                            .toList()
+            );
+            objectMapper.writeValue(playerFile, data);
+        } catch (IOException e) {
+            logger.error("Failed to save player data for " + playerUuid, e);
         }
     }
 
     public void setDisplayEnabled(UUID playerUuid, DisplayType displayType, boolean enabled) {
         playerDisplayStates
-                .computeIfAbsent(playerUuid, k -> new HashMap<>())
-                .put(displayType, enabled);
+                .computeIfAbsent(playerUuid, k -> new HashSet<>());
 
-        save();
+        if (enabled) {
+            playerDisplayStates.get(playerUuid).add(displayType);
+        } else {
+            playerDisplayStates.get(playerUuid).remove(displayType);
+        }
+
+        save(playerUuid);
     }
 
     public boolean isDisplayEnabled(UUID playerUuid, DisplayType displayType) {
         return playerDisplayStates
-                .getOrDefault(playerUuid, new HashMap<>())
-                .getOrDefault(displayType, defaultEnabled);
+                .getOrDefault(playerUuid, Collections.emptySet())
+                .contains(displayType);
+    }
+
+    public Set<DisplayType> getEnabledDisplays(UUID playerUuid) {
+        return Collections.unmodifiableSet(
+                playerDisplayStates.getOrDefault(playerUuid, Collections.emptySet())
+        );
+    }
+
+    @Setter
+    @Getter
+    private static class PlayerData {
+        private List<String> enabledDisplays = new ArrayList<>();
+
     }
 }
 
