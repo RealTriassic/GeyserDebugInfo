@@ -3,8 +3,10 @@ package com.triassic.geyserdebuginfo.placeholder;
 import org.geysermc.geyser.session.GeyserSession;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class PlaceholderManager {
 
@@ -20,7 +22,10 @@ public class PlaceholderManager {
      * @return The text with placeholders resolved to their respective values.
      */
     @NotNull
-    public static String setPlaceholders(final GeyserSession session, final @NotNull String text) {
+    public static String setPlaceholders(
+            final GeyserSession session,
+            final @NotNull String text
+    ) {
         StringBuilder finalResult = new StringBuilder();
         int cursor = 0;
 
@@ -69,6 +74,22 @@ public class PlaceholderManager {
         }
 
         return finalResult.toString();
+    }
+
+    /**
+     * Resolves placeholders in the given text based on the provided Geyser session.
+     * Placeholders should be formatted as %provider_placeholder%.
+     *
+     * @param session The Geyser session to retrieve context-specific placeholder values.
+     * @param text    The text containing placeholders to resolve.
+     * @return The text with placeholders resolved to their respective values.
+     */
+    @NotNull
+    public static List<String> setPlaceholders(
+            final GeyserSession session,
+            final @NotNull List<String> text
+    ) {
+        return text.stream().map(line -> setPlaceholders(session, line)).collect(Collectors.toList());
     }
 
     public void register(PlaceholderProvider provider) {

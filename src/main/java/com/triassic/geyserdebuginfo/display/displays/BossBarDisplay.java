@@ -10,7 +10,6 @@ import org.geysermc.geyser.session.cache.BossBar;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BossBarDisplay extends Display {
 
@@ -29,9 +28,7 @@ public class BossBarDisplay extends Display {
     @Override
     public void updateDisplay() {
         List<String> displayFormat = instance.getConfig().get().getDisplay().getBossBar().getText();
-        String displayText = displayFormat.stream()
-                .map(line -> PlaceholderManager.setPlaceholders(session, line))
-                .collect(Collectors.joining("\n"));
+        String displayText = String.join("\n", PlaceholderManager.setPlaceholders(session, displayFormat));
 
         bossBar.updateTitle(Component.text(displayText));
     }
