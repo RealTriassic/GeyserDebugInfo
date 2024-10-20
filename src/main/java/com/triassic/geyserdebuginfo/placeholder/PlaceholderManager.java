@@ -13,7 +13,7 @@ public class PlaceholderManager {
 
     /**
      * Resolves placeholders in the given text based on the provided Geyser session.
-     * Placeholders should be formatted as %provider_placeholder% (e.g., %chunk_x% or %position_x%).
+     * Placeholders should be formatted as %provider_placeholder%.
      *
      * @param session The Geyser session to retrieve context-specific placeholder values.
      * @param text    The text containing placeholders to resolve.

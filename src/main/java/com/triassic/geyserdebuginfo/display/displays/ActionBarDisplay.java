@@ -28,7 +28,7 @@ public class ActionBarDisplay extends Display {
 
     @Override
     public void updateDisplay() {
-        titlePacket.setText(PlaceholderManager.setPlaceholders(session, instance.getConfig().getDisplay().getActionBar().getText()));
+        titlePacket.setText(PlaceholderManager.setPlaceholders(session, instance.getConfig().get().getDisplay().getActionBar().getText()));
         session.sendUpstreamPacket(titlePacket);
     }
 

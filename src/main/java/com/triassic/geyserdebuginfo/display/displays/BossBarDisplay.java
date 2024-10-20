@@ -28,7 +28,7 @@ public class BossBarDisplay extends Display {
 
     @Override
     public void updateDisplay() {
-        List<String> displayFormat = instance.getConfig().getDisplay().getBossBar().getText();
+        List<String> displayFormat = instance.getConfig().get().getDisplay().getBossBar().getText();
         String displayText = displayFormat.stream()
                 .map(line -> PlaceholderManager.setPlaceholders(session, line))
                 .collect(Collectors.joining("\n"));

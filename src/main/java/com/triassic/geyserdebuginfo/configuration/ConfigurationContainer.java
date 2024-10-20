@@ -1,17 +1,18 @@
 package com.triassic.geyserdebuginfo.configuration;
 
-import org.geysermc.geyser.api.extension.ExtensionLogger;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ConfigurationContainer {
+public class ConfigurationContainer<C> {
 
     private static final String HEADER = """
             GeyserDebugInfo Configuration File
@@ -20,53 +21,58 @@ public class ConfigurationContainer {
             Report any issues on our GitHub repository:
             https://github.com/RealTriassic/GeyserDebugInfo""";
 
-    private final Path configFile;
-    private final ExtensionLogger logger;
+    private final Class<C> clazz;
+    private final AtomicReference<C> config;
     private final YamlConfigurationLoader loader;
-    private final AtomicReference<Configuration> config = new AtomicReference<>();
 
-    public ConfigurationContainer(
-            final Path dataFolder,
-            final ExtensionLogger logger
+    private ConfigurationContainer(
+            final C config,
+            final Class<C> clazz,
+            final YamlConfigurationLoader loader
     ) {
-        this.logger = logger;
-        this.configFile = dataFolder.resolve("config.yml");
+        this.clazz = clazz;
+        this.loader = loader;
+        this.config = new AtomicReference<>(config);
+    }
 
-        this.loader = YamlConfigurationLoader.builder()
+    public static <C> ConfigurationContainer<C> load(
+            Path path,
+            final Class<C> clazz
+    ) throws IOException {
+        path = path.resolve("config.yml");
+
+        final YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
                 .indent(2)
-                .path(configFile)
+                .path(path)
                 .nodeStyle(NodeStyle.BLOCK)
                 .defaultOptions(options -> options
                         .shouldCopyDefaults(true)
                         .header(HEADER))
                 .build();
-    }
 
-    public boolean load(Class<? extends Configuration> clazz) {
-        try {
-            final Configuration loadedConfig = load0(clazz);
-            config.set(loadedConfig);
-            return true;
-        } catch (Throwable e) {
-            logger.error("Failed to load configuration", e);
-            return false;
-        }
-    }
-
-    private Configuration load0(Class<? extends Configuration> clazz) throws IOException {
         final CommentedConfigurationNode node = loader.load();
-        final Configuration loadedConfig = node.get(clazz);
+        final C config = node.get(clazz);
 
-        if (Files.notExists(configFile)) {
-            node.set(clazz, loadedConfig);
+        if (Files.notExists(path)) {
+            node.set(clazz, config);
             loader.save(node);
         }
 
-        return loadedConfig;
+        return new ConfigurationContainer<>(config, clazz, loader);
     }
 
-    @Nullable
-    public Configuration get() {
+    public CompletableFuture<Void> reload() {
+        return CompletableFuture.runAsync(() -> {
+            try {
+                final CommentedConfigurationNode node = loader.load();
+                config.set(node.get(clazz));
+            } catch (ConfigurateException e) {
+                throw new CompletionException("Failed to load configuration", e);
+            }
+        });
+    }
+
+    public C get() {
         return config.get();
     }
 }

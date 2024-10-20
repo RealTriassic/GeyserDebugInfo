@@ -32,15 +32,13 @@ public class GeyserDebugInfo implements Extension {
     @Getter
     private ExtensionLogger logger;
     @Getter
-    private Configuration config;
+    private ConfigurationContainer<Configuration> config;
     @Getter
     private PlayerDataManager playerDataManager;
     @Getter
     private PlaceholderManager placeholderManager;
     @Getter
     private DisplayManager displayManager;
-
-    private ConfigurationContainer configContainer;
 
     @Subscribe
     public void onPreInitialize(GeyserPreInitializeEvent event) {
@@ -50,27 +48,9 @@ public class GeyserDebugInfo implements Extension {
         this.dataFolder = dataFolder();
 
         try {
-            if (Files.notExists(dataFolder))
-                Files.createDirectories(dataFolder);
+            this.config = ConfigurationContainer.load(dataFolder, Configuration.class);
         } catch (IOException e) {
-            logger.error("Failed to create data folder " + dataFolder.toAbsolutePath(), e);
-            extensionManager().disable(this);
-            return;
-        }
-
-        this.configContainer = new ConfigurationContainer(dataFolder, logger);
-
-        if (!configContainer.load(Configuration.class)) {
-            logger.error("Failed to load the configuration. Please check config.yml for issues.");
-            extensionManager().disable(this);
-            return;
-        }
-
-        this.config = configContainer.get();
-
-        if (config == null) {
-            logger.error("Failed to load the configuration. Please check config.yml for issues.");
-            extensionManager().disable(this);
+            logger.error("Failed to load configuration", e);
             return;
         }
 
@@ -103,13 +83,5 @@ public class GeyserDebugInfo implements Extension {
     @Subscribe
     public void onShutdown(GeyserShutdownEvent event) {
         playerDataManager.save();
-    }
-
-    public boolean reloadConfig() {
-        boolean reloaded = configContainer.load(configContainer.get().getClass());
-        if (reloaded)
-            this.config = configContainer.get();
-
-        return reloaded;
     }
 }
