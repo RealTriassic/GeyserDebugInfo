@@ -32,15 +32,6 @@ public class Configuration {
         @Getter
         @ConfigSerializable
         public static class ActionBar {
-            @Setting("enabled")
-            private boolean enabled = true;
-
-            @Setting("visible-by-default")
-            private boolean visibleByDefault = false;
-
-            @Setting("refresh-interval")
-            private int refreshInterval = 50;
-
             @Setting("text")
             private String text = "%player_x% %player_y% %player_z%";
         }
@@ -48,15 +39,6 @@ public class Configuration {
         @Getter
         @ConfigSerializable
         public static class BossBar {
-            @Setting("enabled")
-            private boolean enabled = true;
-
-            @Setting("visible-by-default")
-            private boolean visibleByDefault = false;
-
-            @Setting("refresh-interval")
-            private int refreshInterval = 50;
-
             @Setting("text")
             private List<String> text = List.of(
                     "Geyser Debug Information",
