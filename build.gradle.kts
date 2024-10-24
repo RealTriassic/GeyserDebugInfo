@@ -15,7 +15,7 @@ repositories {
 dependencies {
     implementation("org.spongepowered", "configurate-yaml", "4.2.0-GeyserMC-SNAPSHOT")
 
-    compileOnly("org.geysermc.geyser", "core", "2.4.3-SNAPSHOT")
+    compileOnly("org.geysermc.geyser", "core", "2.4.4-SNAPSHOT")
     compileOnly("org.projectlombok", "lombok", "1.18.34")
     annotationProcessor("org.projectlombok", "lombok", "1.18.34")
 
