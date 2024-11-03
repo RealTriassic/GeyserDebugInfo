@@ -3,7 +3,7 @@ plugins {
     id("net.kyori.blossom") version "2.1.0"
     id("net.kyori.indra.git") version "3.1.3"
     id("io.freefair.lombok") version "8.10.2"
-    id("com.gradleup.shadow") version "8.3.3"
+    id("com.gradleup.shadow") version "8.3.5"
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.9"
 }
 
